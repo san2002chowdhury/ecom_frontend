@@ -1,0 +1,77 @@
+.signin-popup{
+    margin: 0 auto;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #00000090;
+    display: grid;
+}
+.signin-popup-container{
+    place-self: center;
+    color: #808080;
+    background-image: url(../../../../../Downloads/2151896833.jpg) ;
+    background-repeat:no-repeat;
+    background-size:cover;
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    padding:25px 30px ;
+    border-radius: 8px;
+    font-size: 15px;
+    animation: fadeIn 0.5s;
+    z-index: 1;
+    border-color: black;
+}
+.signin-popup-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color:greenyellow;
+}
+.signin-popup-title img{
+    width: 16px;
+    cursor: pointer;
+}
+.signin-popup-input{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.signin-popup-input input{
+    outline:none;
+    border: 1px solid #c9c9c9;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #ffff;    
+}
+.signin-popup-input input::placeholder{
+    color: white;
+}
+.signin-popup-input input::-ms-value{
+    color: white;
+}
+.signin-popup-container button{
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    color: black;
+    background-color:  rgb(214, 246, 52);
+    font-size: 15px;
+    font-weight: bolder;
+    cursor: pointer;
+}
+.login-popup-condition{
+    display: flex;
+    align-items: start;
+    gap:8px;
+    margin-top: -5px;
+}
+.login-popup-condition input{
+    margin-top: 5px;
+}
+.signin-popup p span{
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+}
