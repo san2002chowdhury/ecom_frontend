@@ -134,7 +134,7 @@ function App() {
         {/* <Navbar showSignin={showSignin} setShowSignin={setShowSignin} /> */}
         {/* {isLoading && <Spinner />} */}
         <Navbar />
-        {/* <MyNavbar /> */}
+
         <Suspense fallback={<Spinner />}>
           <Routes>
             <Route path="/" referrerpolicy="no-referrer" element={<MyHome />} />
