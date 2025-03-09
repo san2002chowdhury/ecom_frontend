@@ -1,7 +1,7 @@
 /* eslint-disable react/style-prop-object */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../../Redux/api";
 import Rating from "../Universal_Components/Rating";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,9 +12,10 @@ import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
 const FeaturedProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let { top_products } = useSelector((state) => {
-    return state.productReducer1;
-  });
+  let { top_products } = useSelector(
+    (state) => state.productReducer1,
+    shallowEqual
+  );
   console.log("Top Products-->", top_products);
   top_products = top_products.slice(0, 4);
   return (

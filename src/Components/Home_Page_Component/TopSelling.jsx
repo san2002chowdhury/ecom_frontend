@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // /* eslint-disable jsx-a11y/anchor-is-valid */
 // /* eslint-disable react/jsx-no-comment-textnodes */
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FETCH_TOPTEN_PRODUCTS_REQUEST } from "../../Redux/action";
 import { BASE_URL } from "../../Redux/api";
@@ -12,19 +13,18 @@ import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
 // import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
 const TopSelling = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { top_products } = useSelector((state) => {
-    // console.clear();
-    // console.log("TOP-->PRODUCTS-->", state.productReducer1);
-
-    return state.productReducer1;
-  });
-  const { id } = useSelector((state) => state.loginReducer);
+  const { top_products } = useSelector(
+    (state) => state.productReducer1,
+    shallowEqual
+  );
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   useEffect(() => {
     dispatch({ type: FETCH_TOPTEN_PRODUCTS_REQUEST });
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="container-fluid py-5">
@@ -107,4 +107,4 @@ const TopSelling = () => {
     </div>
   );
 };
-export default TopSelling;
+export default memo(TopSelling);

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_TOP_CATEGORY_REQUEST,
@@ -19,23 +19,23 @@ import {
   getWishlistDataRequest,
 } from "../../Redux/Wishlist/wishlistAction";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
 
 const Shopview = () => {
   const [catValue, setCatValue] = useState("All");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => {
-    return state.categoryReducer;
-  });
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
-  const { products } = useSelector((state) => {
-    return state.productReducer;
-  });
+  const { categories } = useSelector(
+    (state) => state.categoryReducer,
+    shallowEqual
+  );
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
+  const { products } = useSelector(
+    (state) => state.productReducer,
+    shallowEqual
+  );
 
   useEffect(() => {
-    console.log("Cat_ID-->", catValue);
     dispatch({ type: FETCH_TOP_CATEGORY_REQUEST });
 
     dispatch({
@@ -255,4 +255,4 @@ const Shopview = () => {
     </div>
   );
 };
-export default Shopview;
+export default memo(Shopview);

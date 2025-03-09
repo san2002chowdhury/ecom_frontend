@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FETCH_TOPTEN_PRODUCTS_REQUEST } from "../../Redux/action";
@@ -15,7 +16,7 @@ const PremiumProduct = () => {
   });
   useEffect(() => {
     dispatch({ type: FETCH_TOPTEN_PRODUCTS_REQUEST });
-  }, [dispatch]);
+  }, []);
   return (
     <>
       <h1 className="fw-bold mb-0">Related products</h1>

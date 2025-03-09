@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 // import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import {
@@ -8,7 +8,10 @@ import {
 } from "../../Redux/UniversalStore/UnivarSalState";
 
 const ShopPageHeader = () => {
-  const { filter } = useSelector((state) => state.universalReducer);
+  const { filter } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {

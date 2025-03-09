@@ -335,7 +335,7 @@ function* fetchForgotPassword(action) {
       res.data.status === true ? res.data.message : "Something went wrong!"
     );
 
-    if (res && res.status === 200) {
+    if (res) {
       yield put({
         type: FETCH_FORGOT_USER_PASSWORD_SUCCESS,
         payload: res,

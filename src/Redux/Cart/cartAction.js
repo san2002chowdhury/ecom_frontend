@@ -47,7 +47,7 @@ export const getUpdateCartDataRequest = (flag, _id, user_id, product_id) => {
   };
 };
 
-export const getUpdateCartDataSuccess = (action) => {
+export const getUpdateCartDataSuccess = () => {
   return { type: FETCH_ADD_TO_CART_UPDATE_SUCCESS };
 };
 

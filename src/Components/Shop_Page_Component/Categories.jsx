@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../../Redux/Products/ProductAction";
 import {
   setCategory,
@@ -16,12 +16,15 @@ const Categories = () => {
 
   const navigate = useNavigate();
 
-  const { allCategories } = useSelector((state) => {
-    console.log("data--->category", state.categoryReducer);
-    return state.categoryReducer;
-  });
-  const { category } = useSelector((state) => state.universalReducer);
-  const { page } = useSelector((state) => state.universalReducer);
+  const { allCategories } = useSelector(
+    (state) => state.categoryReducer,
+    shallowEqual
+  );
+  const { category } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
+  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
   console.log("PAGE-->", category);
 
   return (
@@ -56,11 +59,8 @@ const Categories = () => {
               </div>
             </li>
             {allCategories.map((el) => (
-              <div>
-                <div
-                  className="d-flex justify-content-between fruite-name"
-                  key={el._id}
-                >
+              <li key={el._id}>
+                <div className="d-flex justify-content-between fruite-name">
                   <button
                     className="btn btn-border"
                     style={{ cursor: "pointer" }}
@@ -92,7 +92,7 @@ const Categories = () => {
                     {")"}
                   </span>
                 </div>
-              </div>
+              </li>
             ))}
           </ul>
         </div>

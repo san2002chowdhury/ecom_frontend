@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 // import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import "./Account.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   getUserAddDataRequest,
@@ -12,14 +13,12 @@ import {
 import { FETCH_USER_DETAILS_REQUEST } from "../../Redux/action";
 
 const Account = () => {
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   const dispatch = useDispatch();
-  const data = useSelector((state) => {
-    console.log("======", state.userReducer);
-    return state?.userReducer?.user_details;
-  });
+  const data = useSelector(
+    (state) => state?.userReducer?.user_details,
+    shallowEqual
+  );
 
   console.log("===data===", data);
   useEffect(() => {
@@ -27,7 +26,7 @@ const Account = () => {
       type: FETCH_USER_DETAILS_REQUEST,
       user_id: id,
     });
-  }, [id, dispatch]);
+  }, []);
 
   const [inputForRestField, setInputForRestField] = useState({
     address: "",

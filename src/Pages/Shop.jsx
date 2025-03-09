@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Categories from "../Components/Shop_Page_Component/Categories";
 import FeaturedProduct from "../Components/Shop_Page_Component/FeaturedProduct";
 import Pagination from "../Components/Shop_Page_Component/Pagination";
@@ -13,11 +13,20 @@ import {
 } from "../Redux/action";
 
 const Shop = () => {
-  const { category } = useSelector((state) => state.universalReducer);
+  const { category } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
 
-  const { page } = useSelector((state) => state.universalReducer);
-  const { filter } = useSelector((state) => state.universalReducer);
-  const { search } = useSelector((state) => state.universalReducer);
+  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
+  const { filter } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
+  const { search } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
 
   const dispatch = useDispatch();
 

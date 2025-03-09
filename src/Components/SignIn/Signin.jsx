@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./Signin.css";
 import { assets } from "../../assets/asset";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getLoginRequest,
   getSignUpRequest,
@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 const Signin = ({ showSignin, setShowSignin, show, onHide, closeModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { payload, token } = useSelector((state) => state.loginReducer);
+  const { payload, token } = useSelector(
+    (state) => state.loginReducer,
+    shallowEqual
+  );
   console.log(payload, token);
   const [currState, setCurrState] = useState("Login");
   const [error, setError] = useState("");

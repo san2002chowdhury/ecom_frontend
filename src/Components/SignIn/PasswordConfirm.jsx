@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getForgotPasswordRequest,
   getResetPasswordIsReset,
@@ -31,7 +31,10 @@ const PasswordConfirm = () => {
     });
     getResetPasswordIsReset();
   }
-  const { isPasswordReset } = useSelector((state) => state.userReducer);
+  const { isPasswordReset } = useSelector(
+    (state) => state.userReducer,
+    shallowEqual
+  );
   console.log("VAL-->", isPasswordReset);
 
   useEffect(() => {

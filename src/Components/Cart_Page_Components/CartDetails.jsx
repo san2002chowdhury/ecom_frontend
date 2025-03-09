@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../../Redux/api";
 import {
   getCartDetailsRequest,
@@ -17,18 +17,18 @@ import toast from "react-hot-toast";
 const CartDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cart_details } = useSelector((state) => {
-    console.log("XXX--->FROM CART", state);
-    return state.cartReducer;
-  });
-  const { id } = useSelector((state) => state.loginReducer);
+  const { cart_details } = useSelector(
+    (state) => state.cartReducer,
+    shallowEqual
+  );
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   let user_id = localStorage.getItem("id");
   useEffect(() => {
     dispatch({
       type: FETCH_CART_DETAILS_REQUEST,
       user_id_for_details: id || user_id,
     });
-  }, [dispatch, id]);
+  }, []);
   return (
     <div className="container-fluid py-5">
       <div className="container py-5">

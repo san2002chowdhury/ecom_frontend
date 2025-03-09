@@ -1,7 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import "./App.css";
-import { Suspense, lazy, memo, useContext, useEffect, useState } from "react";
+import {
+  Suspense,
+  lazy,
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -14,7 +22,7 @@ import React from "react";
 import Spinner from "./Components/Universal_Components/Spinner";
 import Navbar from "./Components/Universal_Components/Navbar";
 import Footer from "./Components/Universal_Components/Footer";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import OtpComponent from "./Components/SignIn/OtpComponent";
 import PasswordConfirm from "./Components/SignIn/PasswordConfirm";
@@ -30,18 +38,38 @@ import {
   FETCH_WISHLIST_DETAILS_REQUEST,
 } from "./Redux/action";
 import { setShowSignin } from "./Redux/UniversalStore/UnivarSalState";
+import Home from "./Pages/Home";
+import Checkout from "./Pages/CheckOut";
+import Wishlist from "./Pages/Wishlist";
+import Cart from "./Pages/Cart";
+import Shop from "./Pages/Shop";
+import Account from "./Components/Account_Page/Account";
+import Contact from "./Pages/Contact";
+import ForgotPassword from "./Components/SignIn/ForgotPassword";
+import ResetPassword from "./Components/SignIn/ResetPassword";
+import ProductDetails from "./Pages/ProductDetail";
 
 function App() {
   const dispatch = useDispatch();
-  let { id, token, name } = useSelector((state) => {
-    return state.loginReducer;
-  });
-  const { showSignin } = useSelector((state) => state.universalReducer);
+  let { id, token, name } = useSelector(
+    (state) => state.loginReducer,
+    shallowEqual
+  );
+  const { showSignin } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
   // const { isLoading } = useSelector((state) => state.universalReducer);
-  const { isLoading } = useSelector((state) => state.loadingReducer);
-  console.log("LOAD-->", isLoading);
+  // const { isLoading } = useSelector(
+  //   (state) => state.loadingReducer,
+  //   shallowEqual
+  // );
+  // console.log("LOAD-->", isLoading);
 
-  const { productTitle } = useSelector((state) => state?.productTitleReducer);
+  const { productTitle } = useSelector(
+    (state) => state?.productTitleReducer,
+    shallowEqual
+  );
 
   // const [showSignin, setShowSignin] = useState(false);
   const MyHome = lazy(() => import("./Pages/Home"));
@@ -49,7 +77,7 @@ function App() {
   const MyCart = lazy(() => import("./Pages/Cart"));
   const MyWishlist = lazy(() => import("./Pages/Wishlist"));
   const MyCheckOut = lazy(() => import("./Pages/CheckOut"));
-  const Account = lazy(() => import("./Components/Account_Page/Account"));
+  // const Account = lazy(() => import("./Components/Account_Page/Account"));
   const MyContact = lazy(() => import("./Pages/Contact"));
   const MyForgotPassword = lazy(() =>
     import("./Components/SignIn/ForgotPassword")
@@ -59,41 +87,43 @@ function App() {
   );
 
   const MyShop = lazy(() => import("./Pages/Shop"));
-
+  // const MyNavbar = lazy(() =>
+  //   import("./Components/Universal_Components/Navbar")
+  // );
   let localToken = localStorage.getItem("token");
-
+  let flagValue = localStorage.getItem("flag");
   useEffect(() => {
     if (localToken) {
       // alert("HI ");
-      if (localStorage.getItem("flag") === "0") {
-        dispatch(getVerifyTokenRequest(localStorage.getItem("token")));
+      if (flagValue === "0") {
+        dispatch(getVerifyTokenRequest(localToken));
         let user = localStorage.getItem("name");
         let user_id = localStorage.getItem("id");
 
-        setTimeout(() => {
-          dispatch(setUserNameSuccess(user));
-          dispatch(setShowSignin(true));
+        // setTimeout(() => {
+        dispatch(setUserNameSuccess(user));
+        dispatch(setShowSignin(true));
 
-          dispatch(setUserIDFetch(id));
-          dispatch({
-            type: FETCH_WISHLIST_DETAILS_REQUEST,
-            user_id_for_details: id || user_id,
-          });
+        dispatch(setUserIDFetch(id));
+        dispatch({
+          type: FETCH_WISHLIST_DETAILS_REQUEST,
+          user_id_for_details: id || user_id,
+        });
 
-          dispatch({
-            type: FETCH_CART_DETAILS_REQUEST,
-            user_id_for_details: id || user_id,
-          });
-          dispatch({
-            type: FETCH_USER_DETAILS_REQUEST,
-            user_id: id || user_id,
-          });
-        }, 2000);
+        dispatch({
+          type: FETCH_CART_DETAILS_REQUEST,
+          user_id_for_details: id || user_id,
+        });
+        dispatch({
+          type: FETCH_USER_DETAILS_REQUEST,
+          user_id: id || user_id,
+        });
+        // }, 2000);
       }
     } else {
       console.log("logout");
     }
-  }, [dispatch, setShowSignin]);
+  }, [dispatch, localToken, flagValue]);
   // }, []);
 
   return (
@@ -102,8 +132,9 @@ function App() {
       <Toaster />
       <Router>
         {/* <Navbar showSignin={showSignin} setShowSignin={setShowSignin} /> */}
-        <Navbar />
         {/* {isLoading && <Spinner />} */}
+        <Navbar />
+        {/* <MyNavbar /> */}
         <Suspense fallback={<Spinner />}>
           <Routes>
             <Route path="/" referrerpolicy="no-referrer" element={<MyHome />} />
@@ -149,13 +180,13 @@ function App() {
               element={<MyProductDetails />}
             />
 
-            {/* {showSignin && (
+            {showSignin && (
               <Route
                 path="/cart"
                 referrerpolicy="no-referrer"
                 element={<MyCart />}
               />
-            )} */}
+            )}
             {showSignin && (
               <Route
                 path="/wishlist"
@@ -163,13 +194,13 @@ function App() {
                 element={<MyWishlist />}
               />
             )}
-            {/* {showSignin && (
+            {showSignin && (
               <Route
                 path="/checkout"
                 referrerpolicy="no-referrer"
                 element={<MyCheckOut />}
               />
-            )} */}
+            )}
 
             {/* {showSignin ? (
               <Route path="/wishlist" element={<MyWishlist />} />

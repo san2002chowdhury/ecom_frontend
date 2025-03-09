@@ -2,14 +2,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { assets } from "../../assets/asset";
 import Signin from "../SignIn/Signin";
 import {
   setUserIDFetch,
   setUserNameSuccess,
 } from "../../Redux/Login/LoginState";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   FETCH_CART_DETAILS_REQUEST,
   FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
@@ -31,23 +31,26 @@ import {
   setShowSignin,
 } from "../../Redux/UniversalStore/UnivarSalState";
 
-const Navbar = ({
-  // showSignin,
-  //  setShowSignin,
-  userData,
-  setBackground,
-}) => {
+// const Navbar = {
+//   // showSignin,
+//   //  setShowSignin,
+//   userData,
+//   setBackground,
+// };
+const Navbar = () => {
   const { showSignin, cartLength } = useSelector(
-    (state) => state.universalReducer
+    (state) => state.universalReducer,
+    shallowEqual
   );
   const Data = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let location = useLocation();
 
-  let { id, token, name } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  let { id, token, name } = useSelector(
+    (state) => state.loginReducer,
+    shallowEqual
+  );
 
   let localToken = localStorage.getItem("token");
   // console.log(
@@ -91,28 +94,18 @@ const Navbar = ({
     ?.split(" ")
     ?.map((el) => el.charAt(0).toUpperCase())
     ?.join("");
-  const { wishlist_details } = useSelector((state) => {
-    return state.wishlistReducer;
-  });
-  const { cart_details } = useSelector((state) => {
-    console.log(
-      "======================================================initial cart state---->",
-      state.cartReducer
-    );
-
-    return state.cartReducer;
-  });
-  console.log(
-    cart_details.length,
-    "========================================================CART DETAILS--->",
-    cart_details
+  const { wishlist_details } = useSelector(
+    (state) => state.wishlistReducer,
+    shallowEqual
+  );
+  const { cart_details } = useSelector(
+    (state) => state.cartReducer,
+    shallowEqual
   );
 
   let lengthCart = cart_details.length;
   let lengthWishlist = wishlist_details.length;
   const closeModal = () => setShowModal(false);
-
-  // console.log("id------>", id);
 
   localStorage.setItem("flag", 0);
   let user_id = localStorage.getItem("id");
@@ -146,7 +139,7 @@ const Navbar = ({
     if (id === undefined || !id) {
       setShowSignin(false);
     }
-  }, [id, dispatch, showSignin, closeModal, location]);
+  }, [id, showSignin, dispatch]);
 
   // console.log("value---->", showSignin);
 
@@ -291,7 +284,7 @@ const Navbar = ({
                     >
                       <Signin
                         closeModal={closeModal}
-                        setBackground={setBackground}
+                        // setBackground={setBackground}
                       />
                     </div>
                   </div>
@@ -369,4 +362,4 @@ const Navbar = ({
     </div>
   );
 };
-export default Navbar;
+export default memo(Navbar);

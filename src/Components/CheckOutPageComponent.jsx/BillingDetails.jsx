@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 
 const BillingDetails = () => {
-  const { user_details } = useSelector((state) => state.userReducer);
+  const { user_details } = useSelector(
+    (state) => state.userReducer,
+    shallowEqual
+  );
   const [inputForField, setInputForField] = useState({
     Nearest_Landmark: "",
     Address: "",

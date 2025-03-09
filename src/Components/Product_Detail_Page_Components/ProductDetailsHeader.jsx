@@ -1,9 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
 
 const ProductDetailsHeader = () => {
-  const { productTitle } = useSelector((state) => state.productTitleReducer);
+  const { productTitle } = useSelector(
+    (state) => state.productTitleReducer,
+    shallowEqual
+  );
   const dispatch = useDispatch();
   // console.log("YXYXYXYXYXYXYXYXYXYX", productTitle);
 

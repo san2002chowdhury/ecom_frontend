@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../../Redux/api";
 import { useNavigate } from "react-router-dom";
 import { setProductTitle } from "../../Redux/productState/productState";
@@ -17,20 +17,18 @@ import toast from "react-hot-toast";
 const WishlistDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { wishlist_details, user_id_for_add, _id } = useSelector((state) => {
-    console.log("XXX--->FROM WISHLIST DETAILS", state.wishlistReducer);
-    return state.wishlistReducer;
-  });
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  const { wishlist_details, user_id_for_add, _id } = useSelector(
+    (state) => state.wishlistReducer,
+    shallowEqual
+  );
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
 
   useEffect(() => {
     dispatch({
       type: FETCH_WISHLIST_DETAILS_REQUEST,
       user_id_for_details: id,
     });
-  }, [dispatch, id]);
+  }, []);
 
   return (
     <div className="container py-5">

@@ -1,4 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import BillingDetails from "../Components/CheckOutPageComponent.jsx/BillingDetails";
 import CheckOutPageHeader from "../Components/CheckOutPageComponent.jsx/CheckOutPageHeader";
 import OrderDetails from "../Components/CheckOutPageComponent.jsx/OrderDetails";
@@ -8,16 +9,14 @@ import { FETCH_USER_DETAILS_REQUEST } from "../Redux/action";
 import { PencilLine } from "lucide-react";
 // import { burger } from "@lucide/lab";
 const Checkout = () => {
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({
       type: FETCH_USER_DETAILS_REQUEST,
       user_id: id,
     });
-  }, [id, dispatch]);
+  }, []);
   return (
     <div>
       <CheckOutPageHeader />

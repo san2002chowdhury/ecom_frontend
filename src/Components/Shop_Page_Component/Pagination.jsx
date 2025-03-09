@@ -1,5 +1,5 @@
 // import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   setCurrPage,
   setPage,
@@ -8,9 +8,12 @@ import {
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const Pagination = () => {
   const dispatch = useDispatch();
-  const { length } = useSelector((state) => state.productReducer);
-  const { page } = useSelector((state) => state.universalReducer);
-  const { currPage } = useSelector((state) => state.universalReducer);
+  const { length } = useSelector((state) => state.productReducer, shallowEqual);
+  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
+  const { currPage } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
 
   console.log("LENGTH---->", length);
 

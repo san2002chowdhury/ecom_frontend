@@ -56,7 +56,7 @@ const Hero = () => {
                   index === 0 ? (
                     <div
                       className="carousel-item active rounded"
-                      key={banner.key}
+                      key={banner.alt}
                     >
                       <img
                         src={banner.src}
@@ -72,7 +72,7 @@ const Hero = () => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="carousel-item rounded" key={banner.key}>
+                    <div className="carousel-item rounded" key={banner.alt}>
                       <img
                         src={banner.src}
                         className="img-fluid w-100 h-100 bg-secondary rounded flex"

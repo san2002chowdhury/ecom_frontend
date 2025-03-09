@@ -1,7 +1,7 @@
 /* eslint-disable react/style-prop-object */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 // import { FETCH_PRODUCT_DETAILS_REQUEST } from "../../Redux/action";
 // import { useEffect } from "react";
@@ -21,14 +21,13 @@ const ProductDisplay = () => {
   const dispatch = useDispatch();
 
   // const { id } = JSON?.parse(localStorage?.getItem("userData")) || "";
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   console.log(id);
 
-  const { productDetails } = useSelector((state) => {
-    return state.productReducer2;
-  });
+  const { productDetails } = useSelector(
+    (state) => state.productReducer2,
+    shallowEqual
+  );
   console.log("product details---->", productDetails);
 
   return (

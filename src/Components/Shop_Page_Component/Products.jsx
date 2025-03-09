@@ -1,6 +1,6 @@
 /* eslint-disable react/style-prop-object */
 
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
@@ -21,13 +21,12 @@ import {
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products } = useSelector((state) => {
-    return state.productReducer;
-  });
+  const { products } = useSelector(
+    (state) => state.productReducer,
+    shallowEqual
+  );
 
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   console.log("Products-->", products);
 
   return (
@@ -58,6 +57,7 @@ const Products = () => {
                     maxHeight: "100%",
                     objectFit: "contain",
                   }}
+                  loading="lazy"
                   onClick={(e) => {
                     e.preventDefault();
                     dispatch(setProductTitle(product.slug));

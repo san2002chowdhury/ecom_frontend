@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getResetPasswordRequest } from "../../Redux/User/userAction";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { getLoginEmpty } from "../../Redux/Login/LoginAction";
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -12,14 +12,11 @@ const ResetPassword = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { id } = useSelector((state) => {
-    return state.loginReducer;
-  });
-  const { isPasswordReset } = useSelector((state) => {
-    console.log("isPasswordReset-->so reducer-->", state.userReducer);
-
-    return state.userReducer;
-  });
+  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
+  const { isPasswordReset } = useSelector(
+    (state) => state.userReducer,
+    shallowEqual
+  );
   console.log(">>>>>>isPasswordReset>>>>>", isPasswordReset);
 
   useEffect(() => {

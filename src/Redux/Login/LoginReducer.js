@@ -1,4 +1,4 @@
-import setCookie from "../../utils/setCookie";
+// import setCookie from "../../utils/setCookie";
 import {
   FETCH_LOGIN_EMPTY_REQUEST,
   FETCH_LOGIN_FAILURE,
@@ -36,7 +36,7 @@ const loginReducer = (state = initialState, action) => {
 
       toast.success(action.payload?.data?.result);
       console.log("MESSAGE-->ALERT-->", action.payload?.data?.result);
-      setCookie("token", action.payload.data.token, 60);
+      // setCookie("token", action.payload.data.token, 60);
       return {
         type: FETCH_LOGIN_SUCCESS,
         payload: action.payload.data,

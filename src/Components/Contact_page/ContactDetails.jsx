@@ -101,7 +101,7 @@ const ContactDetails = () => {
                   className="rounded w-100"
                   style={{ height: "400px" }}
                   loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
+                  referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
               </div>
             </div>
