@@ -56,7 +56,7 @@ const loginReducer = (state = initialState, action) => {
         payload: action.payload,
       };
     case FETCH_SIGNUP_SUCCESS:
-      console.log("FETCH SIGNUP REQUEST------>", action.payload);
+      // console.log("FETCH SIGNUP REQUEST------>", action.payload);
       toast.success(action.payload?.data?.result);
 
       return {
@@ -64,20 +64,20 @@ const loginReducer = (state = initialState, action) => {
         payload: action.payload.data,
       };
     case FETCH_SIGNUP_FAILURE:
-      console.log("FETCH SIGNUP REQUEST------>", action.payload);
+      // console.log("FETCH SIGNUP REQUEST------>", action.payload);
       return {
         type: FETCH_SIGNUP_FAILURE,
         error: action.payload.message,
       };
     case FETCH_VERIFY_TOKEN_REQUEST:
-      console.log("FETCH VERIFY TOKEN REQUEST", action.payload);
+      // console.log("FETCH VERIFY TOKEN REQUEST", action.payload);
 
       return {
         type: FETCH_VERIFY_TOKEN_REQUEST,
         token: action.payload.token,
       };
     case FETCH_VERIFY_TOKEN_SUCCESS:
-      console.log("FETCH VERIFY TOKEN SUCCESS", action.payload);
+      // console.log("FETCH VERIFY TOKEN SUCCESS", action.payload);
 
       localStorage.setItem("flag", 1);
       return {

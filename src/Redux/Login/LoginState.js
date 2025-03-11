@@ -14,7 +14,7 @@ const loginSlice = createSlice({
     },
     setUserNameSuccess(state, action) {
       state.name = action.payload;
-      console.log("from login redux toolkit---->", state.name);
+      // console.log("from login redux toolkit---->", state.name);
     },
     setUserNameFailure(state, action) {
       state.error = action.payload;
@@ -24,7 +24,7 @@ const loginSlice = createSlice({
     },
     setUserIDSuccess(state, action) {
       state.user_id = action.payload;
-      console.log("from login redux toolkit---->", state.user_id);
+      // console.log("from login redux toolkit---->", state.user_id);
     },
     setUserIDFailure(state, action) {
       state.error = action.payload;

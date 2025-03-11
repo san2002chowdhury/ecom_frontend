@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { assets } from "../../assets/asset";
 import Signin from "../SignIn/Signin";
 import {
@@ -37,8 +37,8 @@ import {
 //   userData,
 //   setBackground,
 // };
-const Navbar = () => {
-  const { showSignin, cartLength } = useSelector(
+const Navbar = memo(() => {
+  const { showSignin } = useSelector(
     (state) => state.universalReducer,
     shallowEqual
   );
@@ -47,53 +47,57 @@ const Navbar = () => {
   const dispatch = useDispatch();
   let location = useLocation();
 
-  let { id, token, name } = useSelector(
-    (state) => state.loginReducer,
-    shallowEqual
-  );
+  let { id, name } = useSelector((state) => state.loginReducer, shallowEqual);
 
-  let localToken = localStorage.getItem("token");
-  // console.log(
-  //   "------------------token------------------------------>>>>",
-  //   localStorage.getItem("token")
-  // );
-  // useEffect(() => {
-  //   console.log("PATH NAME-->", location);
-  //   if (localToken) {
-  //     if (localStorage.getItem("flag") === "0") {
-  //       dispatch(getVerifyTokenRequest(localStorage.getItem("token")));
-  //       let user = localStorage.getItem("name");
-  //       let user_id = localStorage.getItem("id");
-
-  //       setTimeout(() => {
-  //         dispatch(setUserNameSuccess(user));
-  //         setShowSignin(true);
-
-  //         dispatch(setUserIDFetch(id));
-  //         dispatch({
-  //           type: FETCH_WISHLIST_DETAILS_REQUEST,
-  //           user_id_for_details: id || user_id,
-  //         });
-
-  //         dispatch({
-  //           type: FETCH_CART_DETAILS_REQUEST,
-  //           user_id_for_details: id || user_id,
-  //         });
-  //         dispatch({
-  //           type: FETCH_USER_DETAILS_REQUEST,
-  //           user_id: id || user_id,
-  //         });
-  //       }, 2000);
-  //     }
-  //   } else {
-  //     console.log("logout");
-  //   }
-  // }, [dispatch, setShowSignin, location]);
+  // let localToken = localStorage.getItem("token");
 
   const user_name = (name || localStorage.getItem("name"))
     ?.split(" ")
     ?.map((el) => el.charAt(0).toUpperCase())
     ?.join("");
+
+  const closeModal = () => setShowModal(false);
+
+  localStorage.setItem("flag", 0);
+  let user_id = localStorage.getItem("id");
+
+  console.log("we->nav->");
+  useEffect(() => {
+    if (id) {
+      dispatch(setUserIDFetch(id));
+      if (!showSignin) {
+        dispatch(setShowSignin(true));
+        localStorage.setItem("isPasswordReset", false);
+        closeModal(true);
+
+        dispatch(setUserNameSuccess(name));
+
+        // setTimeout(() => {
+        // dispatch({
+        //   type: FETCH_WISHLIST_DETAILS_REQUEST,
+        //   user_id_for_details: id || user_id,
+        // });
+
+        // dispatch({
+        //   type: FETCH_CART_DETAILS_REQUEST,
+        //   user_id_for_details: id || user_id,
+        // });
+        // }, 1000);
+        // dispatch({
+        //   type: FETCH_USER_DETAILS_REQUEST,
+        //   user_id: id || user_id,
+        // });
+        dispatch({
+          type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
+        });
+      }
+    }
+    if (id === undefined || !id) {
+      setShowSignin(false);
+    }
+  }, [dispatch, showSignin, id, name]);
+
+  // console.log("value---->", showSignin);
   const { wishlist_details } = useSelector(
     (state) => state.wishlistReducer,
     shallowEqual
@@ -104,44 +108,9 @@ const Navbar = () => {
   );
 
   let lengthCart = cart_details.length;
+  // console.log("LENGTH-->", lengthCart);
+
   let lengthWishlist = wishlist_details.length;
-  const closeModal = () => setShowModal(false);
-
-  localStorage.setItem("flag", 0);
-  let user_id = localStorage.getItem("id");
-
-  useEffect(() => {
-    if (id && !showSignin) {
-      dispatch(setShowSignin(true));
-      localStorage.setItem("isPasswordReset", false);
-      closeModal(true);
-
-      dispatch(setUserNameSuccess(name));
-
-      dispatch(setUserIDFetch(id));
-      dispatch({
-        type: FETCH_WISHLIST_DETAILS_REQUEST,
-        user_id_for_details: id || user_id,
-      });
-
-      dispatch({
-        type: FETCH_CART_DETAILS_REQUEST,
-        user_id_for_details: id || user_id,
-      });
-      dispatch({
-        type: FETCH_USER_DETAILS_REQUEST,
-        user_id: id || user_id,
-      });
-      dispatch({
-        type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
-      });
-    }
-    if (id === undefined || !id) {
-      setShowSignin(false);
-    }
-  }, [id, showSignin, dispatch]);
-
-  // console.log("value---->", showSignin);
 
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
@@ -187,18 +156,10 @@ const Navbar = () => {
               style={{ borderRadius: "50px" }}
             />
           </Link>
-          <button
-            className="navbar-toggler py-2 px-3"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarCollapse"
-          >
+          <button className="navbar-toggler py-2 px-3" type="button">
             <span className="fLink fa-bars text-primary"></span>
           </button>
-          <div
-            className="collapse navbar-collapse bg-white"
-            id="navbarCollapse"
-          >
+          <div className="collapse navbar-collapse bg-white">
             <div className="navbar-nav mx-auto">
               <Link
                 to="/"
@@ -361,5 +322,5 @@ const Navbar = () => {
       </div>
     </div>
   );
-};
-export default memo(Navbar);
+});
+export default Navbar;

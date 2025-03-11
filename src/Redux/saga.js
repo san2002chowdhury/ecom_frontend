@@ -143,21 +143,22 @@ function* fetchAddToCart(action) {
 }
 function* fetchCartDetails(action) {
   try {
-    yield put({ type: SET_LOADING, payload: true });
+    // yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getCartData, {
       user_id: action.user_id_for_details,
     });
-    if (res && res.status === 200) {
-      yield put({ type: FETCH_CART_DETAILS_SUCCESS, payload1: res.data.data });
+    if (res) {
+      yield put({ type: FETCH_CART_DETAILS_SUCCESS, payload: res.data.data });
     }
   } catch (error) {
     yield put({
       type: FETCH_CART_DETAILS_FAILURE,
-      payload1: error.message,
+      payload: error.message,
     });
-  } finally {
-    yield put({ type: SET_LOADING, payload: false });
   }
+  //  finally {
+  //   yield put({ type: SET_LOADING, payload: false });
+  // }
 }
 function* fetchRemoveCartData(action) {
   try {
@@ -205,7 +206,7 @@ function* fetchAddToWihslist(action) {
       user_id: action.user_id_for_add,
       product_id: action.product_id_for_add,
     });
-    console.log(res.data);
+    // console.log(res.data);
 
     yield put({ type: FETCH_ADD_TO_WISHLIST_SUCCESS, payload: res.data });
   } catch (error) {
@@ -365,7 +366,7 @@ function* fetchVerifyToken(action) {
 }
 
 export function* rootSaga() {
-  console.log("we are in root saga");
+  // console.log("we are in root saga");
   yield takeEvery(FETCH_ALL_CATEGORY_REQUEST, fetchAllCategoriesSaga);
   yield takeEvery(FETCH_PRODUCTS_REQUEST, fetchAllProductsSaga);
   yield takeEvery(FETCH_TOP_CATEGORY_REQUEST, fetchTopCategoriesSaga);

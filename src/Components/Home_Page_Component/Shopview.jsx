@@ -19,7 +19,7 @@ import {
   getWishlistDataRequest,
 } from "../../Redux/Wishlist/wishlistAction";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
-import { memo } from "react";
+// import { memo } from "react";
 
 const Shopview = () => {
   const [catValue, setCatValue] = useState("All");
@@ -46,6 +46,7 @@ const Shopview = () => {
       search: "All",
     });
   }, [dispatch, catValue]);
+  // let user_id = localStorage.getItem("id");
 
   return (
     <div className="container-fluid fruite py-5">
@@ -192,10 +193,10 @@ const Shopview = () => {
                                       getAddToCartRequest(id, product._id)
                                     );
                                     // dispatch(incCartLength(1));
+                                    setTimeout(() => {
+                                      dispatch(getCartDetailsRequest(id));
+                                    }, 500);
                                     toast.success(`product added on cart`);
-                                    // setTimeout(() => {
-                                    dispatch(getCartDetailsRequest(id));
-                                    // }, 100);
                                   } else {
                                     toast.error(
                                       "you can't add to cart a product before login,please login!"
@@ -213,9 +214,9 @@ const Shopview = () => {
                                     dispatch(
                                       getAddToWishlistRequest(id, product._id)
                                     );
-                                    // setTimeout(() => {
-                                    dispatch(getWishlistDataRequest(id));
-                                    // }, 100);
+                                    setTimeout(() => {
+                                      dispatch(getWishlistDataRequest(id));
+                                    }, 500);
                                   } else {
                                     toast.error(
                                       "you can't add to wishlist a product without login,please login!"
@@ -255,4 +256,4 @@ const Shopview = () => {
     </div>
   );
 };
-export default memo(Shopview);
+export default Shopview;

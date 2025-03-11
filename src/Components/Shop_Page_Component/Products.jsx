@@ -27,7 +27,7 @@ const Products = () => {
   );
 
   const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  console.log("Products-->", products);
+  // console.log("Products-->", products);
 
   return (
     <div className="col-lg-9" style={{ marginLeft: "150px" }}>

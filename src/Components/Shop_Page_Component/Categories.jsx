@@ -9,7 +9,7 @@ import {
   setPage,
 } from "../../Redux/UniversalStore/UnivarSalState";
 // import { unstable_HistoryRouter } from "react-router-dom";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const Categories = () => {
     shallowEqual
   );
   const { page } = useSelector((state) => state.universalReducer, shallowEqual);
-  console.log("PAGE-->", category);
+  // console.log("PAGE-->", category);
 
   return (
     <div className="row g-4" style={{ marginLeft: "60px" }}>
@@ -38,7 +38,7 @@ const Categories = () => {
                 className="d-flex justify-content-between fruite-name"
                 key={1}
               >
-                <button
+                <span
                   className="btn"
                   style={{ cursor: "pointer" }}
                   value={1}
@@ -55,13 +55,13 @@ const Categories = () => {
                     <i className="text-primary fas fa-apple-alt me-2"></i>
                     All Products
                   </span>
-                </button>
+                </span>
               </div>
             </li>
             {allCategories.map((el) => (
               <li key={el._id}>
                 <div className="d-flex justify-content-between fruite-name">
-                  <button
+                  <span
                     className="btn btn-border"
                     style={{ cursor: "pointer" }}
                     name={el.name}
@@ -85,7 +85,7 @@ const Categories = () => {
                       <i className="text-primary fas fa-apple-alt me-2"></i>
                       {el.name}
                     </span>
-                  </button>
+                  </span>
                   <span>
                     {"("}
                     {el.productCount}
@@ -97,30 +97,6 @@ const Categories = () => {
           </ul>
         </div>
       </div>
-      {/* <div className="col-lg-12">
-        <div className="mb-3">
-          <h2 className="mb-2">Price</h2>
-          <input
-            type="range"
-            className="form-range w-150"
-            id="rangeInput"
-            name="rangeInput"
-            min="0"
-            max="125000"
-            value={range}
-            onChange={(e) => handleRange(e)}
-          />
-          <output
-            id="amount"
-            name="amount"
-            min-velue="0"
-            max-value="125000"
-            for="rangeInput"
-          >
-            {range}
-          </output>
-        </div>
-      </div> */}
     </div>
   );
 };

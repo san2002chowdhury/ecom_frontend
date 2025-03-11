@@ -13,7 +13,7 @@ import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
 // import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
-import { memo } from "react";
+// import { memo } from "react";
 const TopSelling = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -107,4 +107,4 @@ const TopSelling = () => {
     </div>
   );
 };
-export default memo(TopSelling);
+export default TopSelling;

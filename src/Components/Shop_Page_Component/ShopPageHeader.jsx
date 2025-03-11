@@ -64,7 +64,7 @@ const ShopPageHeader = () => {
         <div className="col-6"></div>
         <div className="col-xl-3">
           <div className="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-            <label for="fruits">Filter:</label>
+            <label htmlFor="fruits">Filter:</label>
             <select
               id="fruits"
               name="fruitlist"

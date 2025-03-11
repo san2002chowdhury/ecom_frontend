@@ -61,10 +61,11 @@ const cartReducer = (state = initialState, action) => {
     case FETCH_CART_DETAILS_SUCCESS: {
       console.log(
         "REDUCER------>WE ARE IN ADD TO CART-DETAILS SUCCESS",
-        action.payload1
+        action.payload
       );
+      console.log("lll->", initialState.cart_details);
 
-      return { ...state, cart_details: action.payload1 };
+      return { ...state, cart_details: action.payload };
       // return { ...state, cart_data: action.payload1 };
     }
     case FETCH_REMOVE_FROM_CART_REQUEST:

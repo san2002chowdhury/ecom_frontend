@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { memo, useState } from "react";
 import "./Signin.css";
 import { assets } from "../../assets/asset";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -7,17 +7,16 @@ import {
   getLoginRequest,
   getSignUpRequest,
 } from "../../Redux/Login/LoginAction";
-import { setUserTokenFetch } from "../../Redux/Login/LoginState";
-import { FETCH_WISHLIST_DETAILS_REQUEST } from "../../Redux/action";
+
 import { useNavigate } from "react-router-dom";
-const Signin = ({ showSignin, setShowSignin, show, onHide, closeModal }) => {
+const Signin = ({ closeModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { payload, token } = useSelector(
     (state) => state.loginReducer,
     shallowEqual
   );
-  console.log(payload, token);
+  // console.log(payload, token);
   const [currState, setCurrState] = useState("Login");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -38,12 +37,12 @@ const Signin = ({ showSignin, setShowSignin, show, onHide, closeModal }) => {
   });
   function handleChange(e) {
     e.preventDefault();
-    console.log(e.target);
+    // console.log(e.target);
     setInputForLogin({ ...inputForLogin, [e.target.name]: e.target.value });
   }
   function handleChangeSignUp(e) {
     e.preventDefault();
-    console.log(e.target.value);
+    // console.log(e.target.value);
 
     setInputForSignUp({ ...inputForSignUp, [e.target.name]: e.target.value });
   }
@@ -57,7 +56,7 @@ const Signin = ({ showSignin, setShowSignin, show, onHide, closeModal }) => {
     });
   }
   function handleForSignup() {
-    console.log("before dispatch--->", inputForSignUp);
+    // console.log("before dispatch--->", inputForSignUp);
 
     dispatch(getSignUpRequest(inputForSignUp));
     setInputForSignUp({
@@ -251,4 +250,4 @@ const Signin = ({ showSignin, setShowSignin, show, onHide, closeModal }) => {
     </div>
   );
 };
-export default Signin;
+export default memo(Signin);

@@ -1,4 +1,5 @@
 // import { memo } from "react";
+import { memo } from "react";
 import Banner from "../Components/Home_Page_Component/Banner";
 import Fact from "../Components/Home_Page_Component/Fact";
 import Feature from "../Components/Home_Page_Component/Feature";
@@ -17,4 +18,4 @@ const Home = () => {
     </div>
   );
 };
-export default Home;
+export default memo(Home);
