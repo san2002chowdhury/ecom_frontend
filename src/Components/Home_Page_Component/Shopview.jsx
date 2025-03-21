@@ -46,7 +46,6 @@ const Shopview = () => {
       search: "All",
     });
   }, [dispatch, catValue]);
-  // let user_id = localStorage.getItem("id");
 
   return (
     <div className="container-fluid fruite py-5">
@@ -192,11 +191,7 @@ const Shopview = () => {
                                     dispatch(
                                       getAddToCartRequest(id, product._id)
                                     );
-                                    // dispatch(incCartLength(1));
-                                    setTimeout(() => {
-                                      dispatch(getCartDetailsRequest(id));
-                                    }, 500);
-                                    toast.success(`product added on cart`);
+                                    dispatch(getCartDetailsRequest(id));
                                   } else {
                                     toast.error(
                                       "you can't add to cart a product before login,please login!"
@@ -214,9 +209,8 @@ const Shopview = () => {
                                     dispatch(
                                       getAddToWishlistRequest(id, product._id)
                                     );
-                                    setTimeout(() => {
-                                      dispatch(getWishlistDataRequest(id));
-                                    }, 500);
+
+                                    dispatch(getWishlistDataRequest(id));
                                   } else {
                                     toast.error(
                                       "you can't add to wishlist a product without login,please login!"

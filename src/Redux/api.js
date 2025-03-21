@@ -11,13 +11,6 @@ export const getAllProduct = (payload) => {
     }/${payload.search}`
   );
 };
-// export const getProductByCategory = (payload) => {
-//   console.log("ACTION-->", payload);
-
-//   return axios.post(`${BASE_URL}/category/getData/${payload.page || 1}`, {
-//     name: payload.name,
-//   });
-// };
 export const getTopTenProduct = () => axios.get(`${BASE_URL}/product/topten`);
 export const getProductDetails = (slug) => {
   return axios.post(`${BASE_URL}/product`, slug);
@@ -49,7 +42,7 @@ export const getUpdateCartData = (payload) => {
   console.log("api called update cart----->", payload);
   return axios.patch(`${BASE_URL}/cart/updateQuantity`, {
     flag: payload.flag,
-    _id: payload._id,
+    _id: payload.cart_id,
     user_id: payload.user_id,
     product_id: payload.product_id,
   });
@@ -137,11 +130,6 @@ export const getNewPassword = (payload) => {
     body: payload.data,
   });
 };
-
-// export const getContact = (payload) => {
-//   console.log("We are here in getContact--->and payload is---->", payload);
-//   return axios.post(`${BASE_URL}/contact/getContact`, payload);
-// };
 
 export const getVerifyToken = (payload) => {
   console.log("Api--->VERIFY Token---->", payload);

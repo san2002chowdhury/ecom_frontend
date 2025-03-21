@@ -1,5 +1,3 @@
-/* eslint-disable react/style-prop-object */
-
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setProductTitle } from "../../Redux/productState/productState";
@@ -9,15 +7,12 @@ import {
   getAddToWishlistRequest,
   getWishlistDataRequest,
 } from "../../Redux/Wishlist/wishlistAction";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import {
   getAddToCartRequest,
   getCartDetailsRequest,
 } from "../../Redux/Cart/cartAction";
-// import { incCartLength } from "../../Redux/UniversalStore/UnivarSalState";
 
-/* eslint-disable jsx-a11y/anchor-is-valid */
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +22,6 @@ const Products = () => {
   );
 
   const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  // console.log("Products-->", products);
 
   return (
     <div className="col-lg-9" style={{ marginLeft: "150px" }}>
@@ -100,11 +94,7 @@ const Products = () => {
                       e.preventDefault();
                       if (id) {
                         dispatch(getAddToCartRequest(id, product._id));
-                        // dispatch(incCartLength(1));
-                        toast.success(`product added on cart`);
-                        // setTimeout(() => {
                         dispatch(getCartDetailsRequest(id));
-                        // }, 100);
                       } else {
                         toast.error(
                           "you can't add to cart a product before login,please login!"
@@ -120,9 +110,7 @@ const Products = () => {
                       e.preventDefault();
                       if (id) {
                         dispatch(getAddToWishlistRequest(id, product._id));
-                        // setTimeout(() => {
                         dispatch(getWishlistDataRequest(id));
-                        // }, 100);
                       } else {
                         toast.error(
                           "you can't add to wishlist a product without login,please login!"

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getResetPasswordRequest } from "../../Redux/User/userAction";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { getLoginEmpty } from "../../Redux/Login/LoginAction";
+// import { getLoginEmpty } from "../../Redux/Login/LoginAction";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,8 +31,6 @@ const ResetPassword = () => {
     if (isPasswordReset) {
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
-
-      dispatch(getLoginEmpty());
     }
   }, [dispatch, input.newPassword, input.confirmPassword, isPasswordReset]);
 

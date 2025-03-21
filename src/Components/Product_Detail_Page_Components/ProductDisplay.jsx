@@ -3,16 +3,12 @@
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-// import { FETCH_PRODUCT_DETAILS_REQUEST } from "../../Redux/action";
-// import { useEffect } from "react";
+
 import { BASE_URL } from "../../Redux/api";
 import Rating from "../Universal_Components/Rating";
-import {
-  getAddToCartRequest,
-  // getCartDetailsRequest,
-} from "../../Redux/Cart/cartAction";
+import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
 import { getAddToWishlistRequest } from "../../Redux/Wishlist/wishlistAction";
-// import { toast } from "react-toastify";
+
 import toast from "react-hot-toast";
 import { useState } from "react";
 
@@ -95,10 +91,8 @@ const ProductDisplay = () => {
                       <div className="input-group-btn">
                         <button
                           className="btn btn-sm btn-plus rounded-circle bg-light border"
-                          onClick={() => {
-                            // alert("hi");
-                            // if (quantity > 1) setQuantity(quantity + 1);
-                            // alert(`quantity---> ${product.product_quantity}`);
+                          onClick={(e) => {
+                            e.preventDefault();
                             if (id) {
                               if (quantity === product.product_quantity) {
                                 toast.error(
@@ -153,7 +147,6 @@ const ProductDisplay = () => {
                         e.preventDefault();
                         if (id) {
                           dispatch(getAddToWishlistRequest(id, product._id));
-                          toast.success(`product added on wishlist`);
                         } else {
                           toast.error(
                             "you cant add a product to wishlist before login😥 please login!"

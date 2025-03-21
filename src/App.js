@@ -21,7 +21,7 @@ import {
 import { setShowSignin } from "./Redux/UniversalStore/UnivarSalState";
 import Account from "./Components/Account_Page/Account";
 
-const App = memo(() => {
+const App = React.memo(() => {
   const dispatch = useDispatch();
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   let { id } = useSelector((state) => state.loginReducer, shallowEqual);
@@ -71,12 +71,12 @@ const App = memo(() => {
       dispatch(setUserIDFetch(id));
       dispatch({
         type: FETCH_WISHLIST_DETAILS_REQUEST,
-        user_id_for_details: id || user_id,
+        user_id: id || user_id,
       });
 
       dispatch({
         type: FETCH_CART_DETAILS_REQUEST,
-        user_id_for_details: id || user_id,
+        user_id: id || user_id,
       });
       dispatch({
         type: FETCH_USER_DETAILS_REQUEST,

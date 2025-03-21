@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { memo, useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { assets } from "../../assets/asset";
 import Signin from "../SignIn/Signin";
 import {
@@ -37,7 +37,7 @@ import {
 //   userData,
 //   setBackground,
 // };
-const Navbar = memo(() => {
+const Navbar = React.memo(() => {
   const { showSignin } = useSelector(
     (state) => state.universalReducer,
     shallowEqual
@@ -62,55 +62,31 @@ const Navbar = memo(() => {
   let user_id = localStorage.getItem("id");
 
   console.log("we->nav->");
+
+  const user = useSelector((state) => state.user);
   useEffect(() => {
-    if (id) {
+    if (id && !showSignin) {
+      localStorage.setItem("isPasswordReset", false);
       dispatch(setUserIDFetch(id));
-      if (!showSignin) {
-        dispatch(setShowSignin(true));
-        localStorage.setItem("isPasswordReset", false);
-        closeModal(true);
-
-        dispatch(setUserNameSuccess(name));
-
-        // setTimeout(() => {
-        // dispatch({
-        //   type: FETCH_WISHLIST_DETAILS_REQUEST,
-        //   user_id_for_details: id || user_id,
-        // });
-
-        // dispatch({
-        //   type: FETCH_CART_DETAILS_REQUEST,
-        //   user_id_for_details: id || user_id,
-        // });
-        // }, 1000);
-        // dispatch({
-        //   type: FETCH_USER_DETAILS_REQUEST,
-        //   user_id: id || user_id,
-        // });
-        dispatch({
-          type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
-        });
-      }
+      dispatch(setShowSignin(true));
+      closeModal(true);
+      dispatch(setUserNameSuccess(name));
+    } else if (id === undefined || !id) {
+      dispatch(setShowSignin(false));
+    } else {
+      return;
     }
-    if (id === undefined || !id) {
-      setShowSignin(false);
-    }
-  }, [dispatch, showSignin, id, name]);
+  }, [dispatch, id, showSignin]);
 
-  // console.log("value---->", showSignin);
-  const { wishlist_details } = useSelector(
+  const { count_wishlist } = useSelector(
     (state) => state.wishlistReducer,
     shallowEqual
   );
-  const { cart_details } = useSelector(
+
+  const { count_cart } = useSelector(
     (state) => state.cartReducer,
     shallowEqual
   );
-
-  let lengthCart = cart_details.length;
-  // console.log("LENGTH-->", lengthCart);
-
-  let lengthWishlist = wishlist_details.length;
 
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
@@ -186,7 +162,7 @@ const Navbar = memo(() => {
                   }`}
                 >
                   Wishlist
-                  {wishlist_details && (
+                  {count_wishlist >= 0 && (
                     <span
                       className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                       style={{
@@ -196,7 +172,7 @@ const Navbar = memo(() => {
                         width: "20px",
                       }}
                     >
-                      {lengthWishlist}
+                      {count_wishlist}
                     </span>
                   )}
                 </Link>
@@ -226,7 +202,7 @@ const Navbar = memo(() => {
                       minWidth: "20px",
                     }}
                   >
-                    {lengthCart}
+                    {count_cart}
                   </span>
                 </Link>
               )}
@@ -243,10 +219,7 @@ const Navbar = memo(() => {
                       style={{ display: showModal ? "block" : "none" }}
                       aria-hidden={!showModal}
                     >
-                      <Signin
-                        closeModal={closeModal}
-                        // setBackground={setBackground}
-                      />
+                      <Signin closeModal={closeModal} />
                     </div>
                   </div>
                 </>

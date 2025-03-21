@@ -1,35 +1,30 @@
+import toast from "react-hot-toast";
 import {
   FETCH_ADD_TO_CART_REQUEST,
   FETCH_ADD_TO_CART_SUCCESS,
   FETCH_ADD_TO_CART_UPDATE_REQUEST,
+  FETCH_ADD_TO_CART_UPDATE_SUCCESS,
   FETCH_CART_DETAILS_REQUEST,
   FETCH_CART_DETAILS_SUCCESS,
   FETCH_REMOVE_FROM_CART_REQUEST,
 } from "../action";
 
 const initialState = {
-  _id: "",
   flag: "",
-  token: "",
   quantity: "",
   user_id: "",
-  user_id_for_details: "",
   product_id: "",
-  remove_cart_id: "",
+  cart_id: "",
   cart_data: [],
-  cart_details: [],
-  cartLength: 0,
+  count_cart: 0,
   total_Cart_Value: 0,
-
   error: null,
 };
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_ADD_TO_CART_REQUEST: {
-      // console.log("Step-1------>WE ARE IN ADD TO CART REQUEST", action);
       return {
         ...state,
-        // token: action.token,
         user_id: action.user_id,
         product_id: action.product_id,
         quantity: action.quantity,
@@ -37,53 +32,42 @@ const cartReducer = (state = initialState, action) => {
     }
 
     case FETCH_ADD_TO_CART_SUCCESS: {
-      // console.log(
-      //   "REDUCER------>WE ARE IN ADD TO CART SUCCESS",
-      //   action.payload,
-      //   "-----cart_data-----",
-      //   state.cart_data
-      // );
-
-      let arr = [...state.cart_data];
-      arr.push(action.payload);
-
-      console.log(arr);
-
-      return { ...state, cart_data: arr };
-    }
-    case FETCH_CART_DETAILS_REQUEST: {
-      // console.log(
-      //   "REDUCER------>WE ARE IN ADD TO CART-DETAILS REQUEST",
-      //   action.user_id
-      // );
-      return { ...state, user_id_for_details: action.user_id_for_details };
-    }
-    case FETCH_CART_DETAILS_SUCCESS: {
-      console.log(
-        "REDUCER------>WE ARE IN ADD TO CART-DETAILS SUCCESS",
-        action.payload
-      );
-      console.log("lll->", initialState.cart_details);
-
-      return { ...state, cart_details: action.payload };
-      // return { ...state, cart_data: action.payload1 };
-    }
-    case FETCH_REMOVE_FROM_CART_REQUEST:
-      console.log(`step-3_id_for_remove-------->${action.remove_cart_id}`);
+      if (action.payload.status === "fail") {
+        toast.error("Some error occured!");
+      } else {
+        toast.success("Product added on cart!");
+      }
       return {
         ...state,
-        remove_cart_id: action.remove_cart_id,
+        cart_data: action.payload.data,
+        count_cart: action.payload.cart_count,
+      };
+    }
+    case FETCH_CART_DETAILS_REQUEST: {
+      return { ...state, user_id: action.user_id };
+    }
+    case FETCH_CART_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        cart_data: action.payload.data,
+        count_cart: action.payload.cart_count,
+      };
+    }
+    case FETCH_REMOVE_FROM_CART_REQUEST:
+      return {
+        ...state,
+        cart_id: action.cart_id,
       };
     case FETCH_ADD_TO_CART_UPDATE_REQUEST:
-      console.log(`step-3 for update------`, action);
       return {
         ...state,
         flag: action.flag,
-        _id: action._id,
+        cart_id: action.cart_id,
         user_id: action.user_id,
         product_id: action.product_id,
       };
-
+    case FETCH_ADD_TO_CART_UPDATE_SUCCESS:
+      return { ...state, cart_data: action.payload.data.currentCart };
     default:
       return { ...state };
   }

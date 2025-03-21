@@ -17,23 +17,24 @@ import toast from "react-hot-toast";
 const WishlistDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { wishlist_details, user_id_for_add, _id } = useSelector(
+  const { wishlist_data } = useSelector(
     (state) => state.wishlistReducer,
     shallowEqual
   );
   const { id } = useSelector((state) => state.loginReducer, shallowEqual);
+  let user_id = localStorage.getItem("id");
 
   useEffect(() => {
     dispatch({
       type: FETCH_WISHLIST_DETAILS_REQUEST,
-      user_id_for_details: id,
+      user_id: id || user_id,
     });
   }, []);
 
   return (
     <div className="container py-5">
       <div className="table-responsive">
-        {wishlist_details.length !== 0 ? (
+        {wishlist_data?.length !== 0 ? (
           <table className="table">
             <thead>
               <tr>
@@ -44,7 +45,7 @@ const WishlistDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {wishlist_details.map((item) => (
+              {wishlist_data.map((item) => (
                 <tr key={item._id}>
                   <th scope="row">
                     <div className="d-flex align-items-center">
@@ -99,7 +100,7 @@ const WishlistDetails = () => {
                         dispatch(getRemoveFromWishlist(item._id));
                         setTimeout(() => {
                           dispatch(getWishlistDataRequest(id));
-                        }, 100);
+                        }, 300);
                       }}
                       className="btn btn-md border border-secondary rounded-pill  mt-4 text-primary"
                     >

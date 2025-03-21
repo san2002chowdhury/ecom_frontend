@@ -17,23 +17,22 @@ import toast from "react-hot-toast";
 const CartDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cart_details } = useSelector(
-    (state) => state.cartReducer,
-    shallowEqual
-  );
+
+  const { cart_data } = useSelector((state) => state.cartReducer, shallowEqual);
   const { id } = useSelector((state) => state.loginReducer, shallowEqual);
   let user_id = localStorage.getItem("id");
   useEffect(() => {
     dispatch({
       type: FETCH_CART_DETAILS_REQUEST,
-      user_id_for_details: id || user_id,
+      user_id: id || user_id,
     });
   }, []);
+
   return (
     <div className="container-fluid py-5">
       <div className="container py-5">
         <div className="table-responsive">
-          {cart_details.length !== 0 ? (
+          {cart_data.length !== 0 ? (
             <table className="table">
               <thead>
                 <tr>
@@ -46,7 +45,7 @@ const CartDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {cart_details.map((cart) => (
+                {cart_data.map((cart) => (
                   <tr key={cart._id}>
                     <th scope="row">
                       <div className="d-flex align-items-center">
@@ -90,7 +89,7 @@ const CartDetails = () => {
                             className="btn btn-sm btn-minus rounded-circle bg-light border"
                             onClick={(e) => {
                               e.preventDefault();
-                              if (cart.quantity >= 1) {
+                              if (cart.quantity > 1) {
                                 dispatch(
                                   getUpdateCartDataRequest(
                                     "dec",
@@ -99,7 +98,7 @@ const CartDetails = () => {
                                     cart.product_id
                                   )
                                 );
-                                dispatch(getCartDetailsRequest(id));
+                                // dispatch(getCartDetailsRequest(id));
                               }
                               if (cart.quantity === 1) {
                                 toast.error("You cant set the quantity at 0");
@@ -119,7 +118,7 @@ const CartDetails = () => {
                             className="btn btn-sm btn-plus rounded-circle bg-light border"
                             onClick={(e) => {
                               e.preventDefault();
-                              if (cart.quantity <= 5) {
+                              if (cart.quantity < 5) {
                                 dispatch(
                                   getUpdateCartDataRequest(
                                     "inc",
@@ -128,9 +127,7 @@ const CartDetails = () => {
                                     cart.product_id
                                   )
                                 );
-                                setTimeout(() => {
-                                  dispatch(getCartDetailsRequest(id));
-                                }, 100);
+                                // dispatch(getCartDetailsRequest(id));
                               }
                               if (cart.quantity === 5) {
                                 toast.error(
@@ -155,7 +152,7 @@ const CartDetails = () => {
                           dispatch(getRemoveFromCart(cart._id, id));
                           setTimeout(() => {
                             dispatch(getCartDetailsRequest(id));
-                          }, 100);
+                          }, 300);
                         }}
                       >
                         <i className="fa fa-times text-danger"></i>

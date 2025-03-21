@@ -20,6 +20,7 @@ import {
   FETCH_FORGOT_USER_PASSWORD_FAILURE,
   FETCH_FORGOT_USER_PASSWORD_REQUEST,
   FETCH_FORGOT_USER_PASSWORD_SUCCESS,
+  FETCH_LOGIN_EMPTY_REQUEST,
   FETCH_LOGIN_FAILURE,
   FETCH_LOGIN_REQUEST,
   FETCH_LOGIN_SUCCESS,
@@ -36,6 +37,7 @@ import {
   FETCH_REMOVE_FROM_WISHLIST_REQUEST,
   FETCH_REMOVE_FROM_WISHLIST_SUCCESS,
   FETCH_RESET_USER_PASSWORD_FAILURE,
+  FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
   FETCH_RESET_USER_PASSWORD_REQUEST,
   FETCH_RESET_USER_PASSWORD_SUCCESS,
   FETCH_SET_USER_DATA_FAILURE,
@@ -123,32 +125,32 @@ function* fetchProductDetails(action) {
 }
 function* fetchAddToCart(action) {
   try {
-    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getaddToCart, {
       user_id: action.user_id,
       product_id: action.product_id,
       quantity: action.quantity,
     });
-    if (res && res.status === 200) {
+    if (res) {
+      console.log("res->", res);
+
       yield put({
         type: FETCH_ADD_TO_CART_SUCCESS,
-        payload: res.data.data,
+        payload: res.data,
       });
     }
   } catch (error) {
     yield put({ type: FETCH_ADD_TO_CART_FAILURE, payload: error.message });
-  } finally {
-    yield put({ type: SET_LOADING, payload: false });
   }
 }
 function* fetchCartDetails(action) {
   try {
-    // yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getCartData, {
-      user_id: action.user_id_for_details,
+      user_id: action.user_id,
     });
+    console.log("CART-->SAGA-->", res.data.data);
+
     if (res) {
-      yield put({ type: FETCH_CART_DETAILS_SUCCESS, payload: res.data.data });
+      yield put({ type: FETCH_CART_DETAILS_SUCCESS, payload: res.data });
     }
   } catch (error) {
     yield put({
@@ -156,42 +158,29 @@ function* fetchCartDetails(action) {
       payload: error.message,
     });
   }
-  //  finally {
-  //   yield put({ type: SET_LOADING, payload: false });
-  // }
 }
 function* fetchRemoveCartData(action) {
   try {
-    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getremoveCartData, {
-      _id: action.remove_cart_id,
+      _id: action.cart_id,
     });
-    if (res && res.status === 200) {
+    if (res) {
       yield put({ type: FETCH_REMOVE_FROM_CART_SUCCESS });
-    } else {
-      yield put({
-        type: FETCH_REMOVE_FROM_CART_FAILURE,
-        payload: "Something went wrong",
-      });
     }
   } catch (error) {
     yield put({ type: FETCH_REMOVE_FROM_CART_FAILURE, payload: error });
-  } finally {
-    yield put({ type: SET_LOADING, payload: false });
   }
 }
 function* fetchUpdateCart(action) {
   try {
-    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getUpdateCartData, {
       flag: action.flag,
-      _id: action._id,
+      cart_id: action.cart_id,
       user_id: action.user_id,
       product_id: action.product_id,
     });
     if (res) {
-      yield put({ type: FETCH_ADD_TO_CART_UPDATE_SUCCESS });
-      yield put({ type: SET_LOADING, payload: false });
+      yield put({ type: FETCH_ADD_TO_CART_UPDATE_SUCCESS, payload: res });
     }
   } catch (error) {
     yield put({ type: FETCH_ADD_TO_CART_UPDATE_FAILURE, payload: error });
@@ -199,14 +188,11 @@ function* fetchUpdateCart(action) {
 }
 function* fetchAddToWihslist(action) {
   try {
-    console.log(
-      `WE ARE IN SAGA FILE action--->${action}-------->user_id_for_add-------->${action.user_id_for_add}<--------product_id_for_add--------->${action.product_id_for_add}`
-    );
     const res = yield call(api.getaddToWishlist, {
-      user_id: action.user_id_for_add,
-      product_id: action.product_id_for_add,
+      user_id: action.user_id,
+      product_id: action.product_id,
     });
-    // console.log(res.data);
+    console.log("WISHLIST-->ADD-->", res);
 
     yield put({ type: FETCH_ADD_TO_WISHLIST_SUCCESS, payload: res.data });
   } catch (error) {
@@ -217,30 +203,28 @@ function* fetchWihslistDetails(action) {
   try {
     console.log(
       "action.payload1 details user_id_for_details------>",
-      action.user_id_for_details
+      action.user_id
     );
-    // yield put(setLoading(true));
     const res = yield call(api.getWishlistData, {
-      user_id: action.user_id_for_details,
+      user_id: action.user_id,
     });
-    console.log(res.data.data);
+    console.log(res.data);
     yield put({
       type: FETCH_WISHLIST_DETAILS_SUCCESS,
-      payload1: res.data.data,
+      payload: res.data,
     });
-    // yield put(setLoading(false));
   } catch (error) {
     yield put({
       type: FETCH_WISHLIST_DETAILS_FAILURE,
-      payload1: error.message,
+      payload: error.message,
     });
   }
 }
 function* fetchRemoveWishlistData(action) {
   try {
-    console.log(`step 2-------->${action.remove_wishlist_id}`);
+    console.log(`step 2-------->${action.wishlist_id}`);
     yield call(api.getremoveWishlistData, {
-      _id: action.remove_wishlist_id,
+      _id: action.wishlist_id,
     });
     yield put({ type: FETCH_REMOVE_FROM_WISHLIST_SUCCESS });
   } catch (error) {
@@ -250,18 +234,33 @@ function* fetchRemoveWishlistData(action) {
 
 function* fetchLoginData(action) {
   try {
-    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getLogin, action.payload);
-    if (res && res.status === 200) {
+    console.log("DATA--->res->", res);
+
+    if (res) {
       yield put({
         type: FETCH_LOGIN_SUCCESS,
         payload: res,
       });
     }
+
+    yield put({
+      type: FETCH_CART_DETAILS_REQUEST,
+      user_id: res.data.data.id,
+    });
+    yield put({
+      type: FETCH_WISHLIST_DETAILS_REQUEST,
+      user_id: res.data.data.id,
+    });
+    yield put({
+      type: FETCH_USER_DETAILS_REQUEST,
+      user_id: res.data.data.id,
+    });
+    yield put({
+      type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
+    });
   } catch (error) {
     yield put({ type: FETCH_LOGIN_FAILURE, payload: error });
-  } finally {
-    yield put({ type: SET_LOADING, payload: false });
   }
 }
 
@@ -320,6 +319,8 @@ function* fetchResetPassword(action) {
         type: FETCH_RESET_USER_PASSWORD_SUCCESS,
         payload: res,
       });
+      yield put({ type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST });
+      yield put({ type: FETCH_LOGIN_EMPTY_REQUEST });
     }
   } catch (error) {
     yield put({ type: FETCH_RESET_USER_PASSWORD_FAILURE, payload: error });
@@ -366,7 +367,6 @@ function* fetchVerifyToken(action) {
 }
 
 export function* rootSaga() {
-  // console.log("we are in root saga");
   yield takeEvery(FETCH_ALL_CATEGORY_REQUEST, fetchAllCategoriesSaga);
   yield takeEvery(FETCH_PRODUCTS_REQUEST, fetchAllProductsSaga);
   yield takeEvery(FETCH_TOP_CATEGORY_REQUEST, fetchTopCategoriesSaga);

@@ -10,10 +10,8 @@ import Rating from "../Universal_Components/Rating";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
 import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
-// import { memo } from "react";
 const TopSelling = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,7 +84,6 @@ const TopSelling = () => {
                         e.preventDefault();
                         if (id) {
                           dispatch(getAddToCartRequest(id, product._id));
-                          toast.success(`${product.title} added on cart`);
                         } else {
                           toast.warning(
                             "you can't add to cart a product before login,please login!"
