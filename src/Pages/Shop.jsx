@@ -5,7 +5,7 @@ import FeaturedProduct from "../Components/Shop_Page_Component/FeaturedProduct";
 import Pagination from "../Components/Shop_Page_Component/Pagination";
 import Products from "../Components/Shop_Page_Component/Products";
 import ShopPageHeader from "../Components/Shop_Page_Component/ShopPageHeader";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   FETCH_ALL_CATEGORY_REQUEST,
   FETCH_PRODUCTS_REQUEST,
@@ -13,22 +13,11 @@ import {
 } from "../Redux/action";
 
 const Shop = () => {
-  const { category } = useSelector(
-    (state) => state.universalReducer,
-    shallowEqual
-  );
-
-  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
-  const { filter } = useSelector(
-    (state) => state.universalReducer,
-    shallowEqual
-  );
-  const { search } = useSelector(
-    (state) => state.universalReducer,
-    shallowEqual
-  );
-
   const dispatch = useDispatch();
+  const { category, page, filter, search } = useSelector(
+    (state) => state.universalReducer,
+    shallowEqual
+  );
 
   useEffect(() => {
     dispatch({ type: FETCH_ALL_CATEGORY_REQUEST });
@@ -44,7 +33,6 @@ const Shop = () => {
   return (
     <div className="container-fluid fruite py-5">
       <ShopPageHeader />
-
       <div className="row g-4">
         <div className="col-lg-3">
           <Categories />

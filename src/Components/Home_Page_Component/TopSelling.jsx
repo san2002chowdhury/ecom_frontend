@@ -1,28 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // /* eslint-disable jsx-a11y/anchor-is-valid */
 // /* eslint-disable react/jsx-no-comment-textnodes */
-import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { FETCH_TOPTEN_PRODUCTS_REQUEST } from "../../Redux/action";
-import { BASE_URL } from "../../Redux/api";
 import Rating from "../Universal_Components/Rating";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
 import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
 import toast from "react-hot-toast";
-import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
-const TopSelling = () => {
+import {
+  setActive,
+  setCategoryName,
+} from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
+import "./external.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+const TopSelling = memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { top_products } = useSelector(
-    (state) => state.productReducer1,
+  const { top_products, id } = useSelector(
+    (state) => ({
+      top_products: state.productReducer.top_products,
+      id: state.loginReducer.id,
+    }),
     shallowEqual
   );
-  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  useEffect(() => {
-    dispatch({ type: FETCH_TOPTEN_PRODUCTS_REQUEST });
-  }, []);
 
   return (
     <div className="container-fluid py-5">
@@ -39,18 +41,39 @@ const TopSelling = () => {
         <div className="row g-4">
           {top_products.map((product) => (
             <div className="col-lg-6 col-xl-4" key={product.title}>
-              <div className="p-4 rounded bg-light">
-                <div className="row align-items-center">
+              <div className="p-4 rounded bg-light hover">
+                <div
+                  className="row align-items-center"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "250px", // Fixed height for image container
+                    overflow: "hidden", // Ensure images don't overflow
+                    cursor: "pointer",
+                  }}
+                >
                   <div className="col-6">
                     <img
                       src={`${BASE_URL}/images/` + product.product_image}
-                      className="vesitable-img img-fluid rounded-circle w-100"
+                      className="vesitable-img img-fluid rounded-circle "
+                      // style={{ width: "140px", height: "140px" }}
+                      style={{
+                        width: "auto",
+                        maxWidth: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        objectPosition: "center",
+                      }}
+                      loading="lazy"
                       alt=""
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(setProductTitle(product.slug));
                         dispatch(getProductDetailsRequest(product.slug));
                         dispatch(setActive("Shop"));
+                        dispatch(setCategoryName("All Products"));
                         navigate(`/productDetails/${product.slug}`);
                       }}
                     />
@@ -77,23 +100,47 @@ const TopSelling = () => {
                       {product.rating}
                     </div>
                     <h4 className="mb-3">₹{product.price}</h4>
-                    <Link
-                      href="#"
-                      className="btn border border-secondary rounded-pill px-3 text-primary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (id) {
-                          dispatch(getAddToCartRequest(id, product._id));
-                        } else {
-                          toast.warning(
-                            "you can't add to cart a product before login,please login!"
-                          );
-                        }
-                      }}
-                    >
-                      <i className="fa fa-shopping-bag me-2 text-primary"></i>{" "}
-                      Add to cart
-                    </Link>
+                    {product.product_quantity !== 0 ? (
+                      <Link
+                        href="#"
+                        className="btn border border-secondary rounded-pill px-3 text-primary"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (id) {
+                            dispatch(getAddToCartRequest(id, product._id));
+                          } else {
+                            toast.error(
+                              "you can't add to cart a product before login,please login!"
+                            );
+                          }
+                        }}
+                      >
+                        <i className="fa fa-shopping-bag me-2 text-primary"></i>{" "}
+                        Add to cart
+                      </Link>
+                    ) : (
+                      <div
+                        style={{
+                          fontStyle: "italic",
+                          fontWeight: "bolder",
+                          color: "white",
+                          backgroundColor: "red",
+                          borderRadius: "50px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            marginTop: "5px",
+                            textAlign: "center",
+                            marginBottom: "5px",
+                            fontSize: "13px",
+                            padding: "5px",
+                          }}
+                        >
+                          Currently Out Of Stock!
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -103,5 +150,5 @@ const TopSelling = () => {
       </div>
     </div>
   );
-};
+});
 export default TopSelling;

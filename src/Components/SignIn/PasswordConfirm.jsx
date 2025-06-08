@@ -4,12 +4,15 @@ import {
   getForgotPasswordRequest,
   getResetPasswordIsReset,
 } from "../../Redux/User/userAction";
-// import { toast } from "react-toastify";
-// import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { BadgeAlert, BadgeCheck } from "lucide-react";
 
 const PasswordConfirm = () => {
   const dispatch = useDispatch();
+  const { isPasswordForgot } = useSelector(
+    (state) => ({ isPasswordForgot: state.userReducer.isPasswordForgot }),
+    shallowEqual
+  );
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [input, setInput] = useState({
@@ -22,20 +25,15 @@ const PasswordConfirm = () => {
   function handleClick(e) {
     e.preventDefault();
     const id = localStorage.getItem("id");
-    console.log("id----->Here-->", id);
+
     dispatch(getForgotPasswordRequest(id, input));
 
     setInput({
       newPassword: "",
       confirmPassword: "",
     });
-    getResetPasswordIsReset();
+    dispatch(getResetPasswordIsReset());
   }
-  const { isPasswordReset } = useSelector(
-    (state) => state.userReducer,
-    shallowEqual
-  );
-  console.log("VAL-->", isPasswordReset);
 
   useEffect(() => {
     if (input.confirmPassword && input.newPassword !== input.confirmPassword) {
@@ -45,9 +43,30 @@ const PasswordConfirm = () => {
       setSuccess(`Everything is fine `);
     }
   }, [input.newPassword, input.confirmPassword]);
+  const style = {
+    color: "red",
+    fontWeight: "bold",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleSuccess = {
+    color: "green",
+    fontWeight: "bolder",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleBackground = {
+    marginTop: "10px",
+    padding: "3px",
+    backgroundColor: "#0013",
+    maxWidth: "60%",
+    borderRadius: "50px",
+  };
   return (
     <div style={{ marginTop: "200px" }}>
-      {!isPasswordReset ? (
+      {!isPasswordForgot ? (
         <div
           className="col-lg-3"
           style={{
@@ -62,29 +81,36 @@ const PasswordConfirm = () => {
           <input
             type="password"
             value={input.newPassword}
-            placeholder="new password"
+            placeholder="New Password"
             name="newPassword"
             onChange={(e) => {
               handleChange(e);
             }}
-            style={{ marginTop: "15px", width: "100%" }}
+            style={{ padding: "5px", marginTop: "15px", width: "100%" }}
           />
           <br />
           <input
             type="password"
             value={input.confirmPassword}
-            placeholder="confirm password"
+            placeholder="Confirm Password"
             name="confirmPassword"
             onChange={(e) => handleChange(e)}
-            style={{ marginTop: "15px", width: "100%" }}
+            style={{ padding: "5px", marginTop: "15px", width: "100%" }}
           />
           {error ? (
-            <div style={{ color: "red", marginTop: "5px" }}>{error}</div>
+            <div style={styleBackground}>
+              <p style={style}>
+                <BadgeAlert />
+                {error}
+              </p>
+            </div>
           ) : input.confirmPassword === "" ? (
             <></>
           ) : (
-            <div style={{ color: "green", marginTop: "5px" }}>
-              {success} &#9989;
+            <div style={styleBackground}>
+              <p style={styleSuccess}>
+                <BadgeCheck /> {success}
+              </p>
             </div>
           )}
 

@@ -1,4 +1,5 @@
 // import { memo } from "react";
+import React from "react";
 import ContactDetails from "../Components/Contact_page/ContactDetails";
 import ContactHeader from "../Components/Contact_page/ContactHeader";
 

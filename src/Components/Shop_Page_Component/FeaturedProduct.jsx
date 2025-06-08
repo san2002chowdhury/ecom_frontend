@@ -2,21 +2,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../../Redux/api";
+
 import Rating from "../Universal_Components/Rating";
 import { Link, useNavigate } from "react-router-dom";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const FeaturedProduct = () => {
+const FeaturedProduct = memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let { top_products } = useSelector(
-    (state) => state.productReducer1,
+    (state) => state.productReducer,
     shallowEqual
   );
-  console.log("Top Products-->", top_products);
   top_products = top_products.slice(0, 4);
   return (
     <div className="col-lg-12" style={{ marginLeft: "60px" }}>
@@ -32,7 +33,6 @@ const FeaturedProduct = () => {
           <div
             className="rounded me-4"
             style={{ width: "100px", height: "100px" }}
-            // key={product._id}
           >
             <img
               src={`${BASE_URL}/images/` + product.product_image}
@@ -91,5 +91,5 @@ const FeaturedProduct = () => {
       </div>
     </div>
   );
-};
+});
 export default FeaturedProduct;

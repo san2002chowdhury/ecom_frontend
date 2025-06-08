@@ -8,20 +8,22 @@
     display: grid;
 }
 .signin-popup-container{
-    place-self: center;
-    color: #808080;
-    background-image: url(../../../../../Downloads/2151896833.jpg) ;
-    background-repeat:no-repeat;
-    background-size:cover;
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    padding:25px 30px ;
-    border-radius: 8px;
-    font-size: 15px;
-    animation: fadeIn 0.5s;
-    z-index: 1;
-    border-color: black;
+    
+        place-self: center;
+        color: #808080;
+        background-image: url(../../../public/2151896833.jpg);
+        background-repeat: no-repeat;
+        background-size: cover; /* This ensures the image fully covers the container */
+        background-position: center; /* Center the image */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 25px 30px;
+        border-radius: 8px;
+        font-size: 15px;
+        animation: fadeIn 0.5s;
+        z-index: 1;
+        border: 1px solid black; /* fixed this too, as border-color alone does nothing */
 }
 .signin-popup-title{
     display: flex;
@@ -30,8 +32,14 @@
     color:greenyellow;
 }
 .signin-popup-title img{
-    width: 16px;
+    /* width: 16px; */
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 50px;
+    background-color: white;
+
     cursor: pointer;
+    
 }
 .signin-popup-input{
     display: flex;
@@ -46,17 +54,23 @@
     color: #ffff;    
 }
 .signin-popup-input input::placeholder{
-    color: white;
+    color: #fff;
+    background-color:transparent;
+    padding-left: 20px;
+    font-style: italic;
 }
+
 .signin-popup-input input::-ms-value{
     color: white;
 }
 .signin-popup-container button{
+    margin-top: 0px;
     border: none;
     padding: 10px;
     border-radius: 4px;
-    color: black;
-    background-color:  rgb(214, 246, 52);
+    font-weight: bolder;
+    color: rgb(5, 5, 5);
+    background-color:  rgb(179, 255, 0);
     font-size: 15px;
     font-weight: bolder;
     cursor: pointer;
@@ -64,8 +78,8 @@
 .login-popup-condition{
     display: flex;
     align-items: start;
-    gap:8px;
-    margin-top: -5px;
+    gap:4px;
+    margin-top: -2px;
 }
 .login-popup-condition input{
     margin-top: 5px;

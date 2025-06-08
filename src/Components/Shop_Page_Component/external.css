@@ -1,0 +1,19 @@
+.hover:hover{
+    transition: all 0.9s ease;
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    overflow: hidden;
+}
+.cossButton:hover{
+    color:red;
+    /* font-weight:900; */
+  transition: color 0.3s ease; 
+} 
+.cossButton{
+    font-weight: 900;
+    cursor: pointer;
+    height: 16px;
+    flex-shrink: 0;
+    color: white;
+}

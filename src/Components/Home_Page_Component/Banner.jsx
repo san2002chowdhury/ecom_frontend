@@ -11,14 +11,17 @@ const Banner = () => {
   const navigate = useNavigate();
   const slug = "boat-headphone";
   return (
-    <div className="container-fluid banner bg-secondary my-5">
+    <div
+      className="container-fluid banner my-5"
+      style={{ backgroundColor: "#45595b" }}
+    >
       <div className="container py-5">
         <div className="row g-4 align-items-center">
           <div className="col-lg-6">
             <div className="py-4">
               <h1
                 className="display-3 text-white"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", fontStyle: "italic" }}
                 onClick={(e) => {
                   e.preventDefault();
                   dispatch(setProductTitle(slug));
@@ -30,13 +33,15 @@ const Banner = () => {
                 BOAT Headset K8P4-9
               </h1>
 
-              <p className="fw-normal display-3 text-dark mb-4">in Our Store</p>
-              <p className="mb-4 text-dark">
+              <p className="fw-normal display-3 text-white mb-4">
+                in Our Store
+              </p>
+              <p className="mb-4 text-white">
                 The generated Lorem Ipsum is therefore always free from
                 repetition injected humour, or non-characteristic words etc.
               </p>
               <Link
-                className="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5"
+                className="banner-btn btn border-2 border-white rounded-pill text-white py-3 px-5"
                 key={banners[8].category}
                 onClick={(e) => {
                   e.preventDefault();
@@ -47,7 +52,7 @@ const Banner = () => {
                   navigate(`/productDetails/${slug}`);
                 }}
               >
-                BUY
+                Buy Now!
               </Link>
             </div>
           </div>
@@ -67,12 +72,23 @@ const Banner = () => {
                 }}
               />
               <div
-                className="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute"
-                style={{ width: "140px", height: "140px", top: "0", left: "0" }}
+                className="d-flex align-items-center justify-content-center position-absolute"
+                style={{
+                  width: "140px",
+                  top: "0",
+                  left: "4",
+                  backgroundColor: "white",
+                  border: "3px solid black",
+                  borderRadius: "30px",
+                  fontStyle: "italic",
+                  fontWeight: "bolder",
+                }}
               >
-                <h1 style={{ fontSize: "100px" }}>₹</h1>
+                <h1 style={{ fontSize: "40px", color: "red" }}>₹</h1>
                 <div className="d-flex flex-column">
-                  <span className="h2 mb-0">1599</span>
+                  <span className="h2 mb-0" style={{ color: "red" }}>
+                    1599
+                  </span>
                   <span className="h4 text-muted mb-0"></span>
                 </div>
               </div>

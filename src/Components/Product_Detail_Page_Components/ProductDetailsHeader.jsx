@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
 
 const ProductDetailsHeader = () => {
+  const dispatch = useDispatch();
   const { productTitle } = useSelector(
     (state) => state.productTitleReducer,
     shallowEqual
   );
-  const dispatch = useDispatch();
-  // console.log("YXYXYXYXYXYXYXYXYXYX", productTitle);
-
   return (
     <div className="container-fluid page-header py-5">
       <h1 className="text-center text-white display-6">Shop Detail</h1>

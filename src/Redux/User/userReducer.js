@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const {
   FETCH_USER_DETAILS_REQUEST,
@@ -10,55 +10,64 @@ const {
   FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
   FETCH_FORGOT_USER_PASSWORD_REQUEST,
   FETCH_FORGOT_USER_PASSWORD_SUCCESS,
+  IMAGE_UPLOAD_REQUEST,
+  IMAGE_UPLOAD_SUCCESS,
 } = require("../action");
 
 const initialState = {
   user_details: [],
   user_id: "",
-  error: null,
+  token: "",
   aditional_data: [],
   data: [],
+  formData: {},
   isPasswordReset: false,
+  isPasswordForgot: false,
+  error: null,
 };
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_USER_DETAILS_REQUEST:
-      console.log(`FROM USER-REDUCERuser user_id---->${action.user_id}`);
       return {
         ...state,
         user_id: action.user_id,
       };
     case FETCH_USER_DETAILS_SUCCESS:
-      console.log("FROM USER-REDUCER  user_details---->", action);
       return {
         ...state,
         user_details: action.payload.data.data,
       };
     case FETCH_SET_USER_DATA_REQUEST:
-      console.log("FROM USER-REDUCER additional data---->", action.user_id);
-      console.log("FROM USER-REDUCER additional data---->", action);
-
       return {
         ...state,
         user_id: action.user_id,
         aditional_data: action.data,
       };
+    case IMAGE_UPLOAD_REQUEST:
+      return {
+        ...state,
+        formData: action.formData,
+      };
+    case IMAGE_UPLOAD_SUCCESS:
+      return {
+        ...state,
+        user_details: action.payload.data.data,
+      };
     case FETCH_SET_USER_DATA_SUCCESS:
-      console.log("FROM USER-REDUCER additional data---->", action);
       toast.success(action.payload.data.message);
+      // toast.success(action.payload.data.message);
+      localStorage.setItem("name", action.payload.data.name);
       return {
         ...state,
         user_details: action.payload.data.data,
       };
     case FETCH_RESET_USER_PASSWORD_REQUEST:
-      console.log("From USER-REDUCER---->DATA---->", action);
       return {
         ...state,
         user_id: action.user_id,
         data: action.data,
       };
     case FETCH_RESET_USER_PASSWORD_SUCCESS:
-      console.log("From USER-REDUCER SUCCESS--->message--->", action);
       toast.success(action.payload.data.message);
       return {
         ...state,
@@ -66,22 +75,16 @@ const userReducer = (state = initialState, action) => {
       };
 
     case FETCH_FORGOT_USER_PASSWORD_REQUEST:
-      console.log("From USER-REDUCER-->FORGOT PASSWORD---->DATA---->", action);
       return {
         ...state,
         user_id: action.user_id,
         data: action.data,
-        isPasswordReset: false,
+        isPasswordForgot: false,
       };
     case FETCH_FORGOT_USER_PASSWORD_SUCCESS:
-      console.log(
-        "From USER-REDUCER SUCCESS-->FORGOT PASSWORD--->message--->",
-        action
-      );
-      toast.success(action.payload.data.message);
       return {
         ...state,
-        isPasswordReset: true,
+        isPasswordForgot: true,
       };
 
     case FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST:

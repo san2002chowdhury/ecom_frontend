@@ -2,27 +2,24 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   active: "Home",
   category: "All",
+  categoryName: "All Products",
   page: 1,
   filter: 1,
   search: "All",
   currPage: 1,
-  showSignin: false,
-  isLoading: false,
+  orderPage: 1,
+  payMode: "",
+  filterOrder: "All Orders",
   error: null,
 };
 const universalSlice = createSlice({
   name: "universalCard",
   initialState,
   reducers: {
-    setIsLoading(state, action) {
-      state.isLoading = action.payload;
-    },
-
-    setShowSignin(state, action) {
-      state.showSignin = action.payload;
+    setPayment(state, action) {
+      state.payMode = action.payload;
     },
     setActive(state, action) {
-      console.log("AC->", action.payload);
       state.active =
         localStorage.getItem("active", action.payload) || action.payload;
     },
@@ -32,17 +29,20 @@ const universalSlice = createSlice({
     },
 
     setCategory(state, action) {
-      // alert(action.payload);
       state.category = action.payload;
     },
 
     setPage(state, action) {
-      console.log("PAGE-->SETPAGE-->", action.payload);
-
       state.page = action.payload;
+    },
+    setOrderPage(state, action) {
+      state.orderPage = action.payload;
     },
     setFilter(state, action) {
       state.filter = action.payload;
+    },
+    setOrderFilter(state, action) {
+      state.filterOrder = action.payload;
     },
     setSearch(state, action) {
       state.search = action.payload;
@@ -57,19 +57,24 @@ const universalSlice = createSlice({
       state.search = "All";
       state.currPage = 1;
     },
+    setCategoryName(state, action) {
+      state.categoryName = action.payload;
+    },
   },
 });
 export const {
-  setShowSignin,
+  setPayment,
   setActive,
   setInActive,
   setPage,
   setCategory,
-  setNavbar,
   setFilter,
+  setOrderFilter,
   setSearch,
   setCurrPage,
   setDefault,
+  setOrderPage,
+  setCategoryName,
 } = universalSlice.actions;
 
 export default universalSlice.reducer;

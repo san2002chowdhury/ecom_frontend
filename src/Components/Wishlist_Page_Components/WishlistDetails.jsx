@@ -1,93 +1,110 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../../Redux/api";
+
 import { useNavigate } from "react-router-dom";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
-import { useEffect } from "react";
-import { FETCH_WISHLIST_DETAILS_REQUEST } from "../../Redux/action";
 import {
+  getRemoveAllFromWishlist,
   getRemoveFromWishlist,
   getWishlistDataRequest,
 } from "../../Redux/Wishlist/wishlistAction";
 import { getAddToCartRequest } from "../../Redux/Cart/cartAction";
+import { memo } from "react";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const WishlistDetails = () => {
+const WishlistDetails = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { wishlist_data } = useSelector(
-    (state) => state.wishlistReducer,
+
+  const { id, wishlist_data } = useSelector(
+    (state) => ({
+      id: state.loginReducer.id,
+      wishlist_data: state.wishlistReducer.wishlist_data,
+    }),
     shallowEqual
   );
-  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  let user_id = localStorage.getItem("id");
-
-  useEffect(() => {
-    dispatch({
-      type: FETCH_WISHLIST_DETAILS_REQUEST,
-      user_id: id || user_id,
-    });
-  }, []);
+  function handleClick(e) {
+    e.preventDefault();
+    if (wishlist_data.length > 0) dispatch(getRemoveAllFromWishlist(id));
+    else toast.error("Your wishlist is empty nothing can't be removed");
+  }
 
   return (
     <div className="container py-5">
       <div className="table-responsive">
+        <div className="text-end mb-3">
+          <button
+            className="btn btn-primary"
+            onClick={handleClick}
+            style={{ marginTop: "5px", marginRight: "5px" }}
+          >
+            Clear All
+          </button>
+        </div>
         {wishlist_data?.length !== 0 ? (
           <table className="table">
             <thead>
               <tr>
-                <th scope="col">Products</th>
-                <th scope="col">Name</th>
-                <th scope="col">Handle</th>
-                <th scope="col">Handle</th>
+                <th scope="col" className="text-center">
+                  Products
+                </th>
+                <th scope="col" className="text-center">
+                  Name
+                </th>
+                <th scope="col" className="text-center">
+                  Add To Cart
+                </th>
+                <th scope="col" className="text-center">
+                  Remove From Wishlist
+                </th>
               </tr>
             </thead>
             <tbody>
-              {wishlist_data.map((item) => (
-                <tr key={item._id}>
-                  <th scope="row">
-                    <div className="d-flex align-items-center">
-                      <img
-                        src={`${BASE_URL}/images/` + item.product_img}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          dispatch(setProductTitle(item.slug));
-                          dispatch(getProductDetailsRequest(item.slug));
-                          navigate(`/productDetails/${item.slug}`);
-                        }}
-                        className="img-fluid me-5 rounded-circle"
-                        style={{ width: "80px", height: "80px" }}
-                        alt=""
-                      />
-                    </div>
-                  </th>
+              {wishlist_data?.map((item) => (
+                <tr key={item._id} className="align-middle text-center">
                   <td>
-                    <p
-                      className="mb-0 mt-4"
+                    <img
+                      src={`${BASE_URL}/images/${item.product_img}`}
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(setProductTitle(item.slug));
                         dispatch(getProductDetailsRequest(item.slug));
                         navigate(`/productDetails/${item.slug}`);
                       }}
-                    >
-                      {item.product_name}
-                    </p>
+                      className="img-fluid rounded-circle"
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        cursor: "pointer",
+                      }}
+                      alt={item.product_name}
+                    />
+                  </td>
+                  <td
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(setProductTitle(item.slug));
+                      dispatch(getProductDetailsRequest(item.slug));
+                      navigate(`/productDetails/${item.slug}`);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <p className="mb-0 mt-4">{item.product_name}</p>
                   </td>
                   <td>
                     <button
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(getAddToCartRequest(id, item.product_id));
-                        toast.success("Product added on cart");
                         dispatch(getRemoveFromWishlist(item._id));
                         setTimeout(() => {
                           dispatch(getWishlistDataRequest(id));
                         }, 100);
                       }}
-                      className="btn btn-md border border-secondary rounded-pill  mt-4 text-primary"
+                      className="btn btn-md border border-secondary rounded-pill mt-4 text-primary"
                     >
                       <i className="fa fa-shopping-bag me-2 text-primary"></i>{" "}
                       Add To Cart
@@ -100,11 +117,11 @@ const WishlistDetails = () => {
                         dispatch(getRemoveFromWishlist(item._id));
                         setTimeout(() => {
                           dispatch(getWishlistDataRequest(id));
-                        }, 300);
+                        }, 100);
                       }}
-                      className="btn btn-md border border-secondary rounded-pill  mt-4 text-primary"
+                      className="btn btn-md border border-secondary rounded-pill mt-4 text-danger"
                     >
-                      <i className="fa fa-times me-2 text-primary"></i> Remove
+                      <i className="fa fa-times me-2 text-danger"></i> Remove
                     </button>
                   </td>
                 </tr>
@@ -119,5 +136,5 @@ const WishlistDetails = () => {
       </div>
     </div>
   );
-};
+});
 export default WishlistDetails;

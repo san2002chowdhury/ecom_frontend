@@ -30,6 +30,11 @@ import {
   FETCH_PRODUCTS_FAILURE,
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_SUCCESS,
+  FETCH_REMOVE_ALL_FROM_CART_FAILURE,
+  FETCH_REMOVE_ALL_FROM_CART_REQUEST,
+  FETCH_REMOVE_ALL_FROM_CART_SUCCESS,
+  FETCH_REMOVE_ALL_FROM_WISHLIST_REQUEST,
+  FETCH_REMOVE_ALL_FROM_WISHLIST_SUCCESS,
   FETCH_REMOVE_FROM_CART_FAILURE,
   FETCH_REMOVE_FROM_CART_REQUEST,
   FETCH_REMOVE_FROM_CART_SUCCESS,
@@ -61,7 +66,32 @@ import {
   FETCH_WISHLIST_DETAILS_FAILURE,
   FETCH_WISHLIST_DETAILS_REQUEST,
   FETCH_WISHLIST_DETAILS_SUCCESS,
+  GET_ONLINE_PAYMENT_FAILED_REQUEST,
+  GET_ONLINE_PAYMENT_FAILED_SUCCESS,
+  GET_ONLINE_PAYMENT_SUCCESS_FAILURE,
+  GET_ONLINE_PAYMENT_SUCCESS_REQUEST,
+  GET_ONLINE_PAYMENT_SUCCESS_SUCCESS,
+  GET_ORDER_DETAILS_FAILURE,
+  GET_ORDER_DETAILS_REQUEST,
+  GET_ORDER_DETAILS_SUCCESS,
+  GET_REVIEW_REQUEST,
+  GET_REVIEW_SUCCESS,
+  IMAGE_UPLOAD_FAILURE,
+  IMAGE_UPLOAD_REQUEST,
+  IMAGE_UPLOAD_SUCCESS,
+  SET_COUPON_FAILURE,
+  SET_COUPON_REQUEST,
+  SET_COUPON_SUCCESS,
   SET_LOADING,
+  SET_ONLINE_PAYMENT_ORDER_ERROR,
+  SET_ONLINE_PAYMENT_ORDER_REQUEST,
+  SET_ONLINE_PAYMENT_ORDER_SUCCESS,
+  SET_ORDER_FAILURE,
+  SET_ORDER_REQUEST,
+  SET_ORDER_SUCCESS,
+  SET_REVIEW_REQUEST,
+  SET_REVIEW_SUCCESS,
+  SET_TOTAL_CART_VALUE_SUCCESS,
 } from "./action";
 import * as api from "./api";
 
@@ -131,8 +161,6 @@ function* fetchAddToCart(action) {
       quantity: action.quantity,
     });
     if (res) {
-      console.log("res->", res);
-
       yield put({
         type: FETCH_ADD_TO_CART_SUCCESS,
         payload: res.data,
@@ -147,7 +175,7 @@ function* fetchCartDetails(action) {
     const res = yield call(api.getCartData, {
       user_id: action.user_id,
     });
-    console.log("CART-->SAGA-->", res.data.data);
+    console.log("CART DETAILS-->", res);
 
     if (res) {
       yield put({ type: FETCH_CART_DETAILS_SUCCESS, payload: res.data });
@@ -171,6 +199,24 @@ function* fetchRemoveCartData(action) {
     yield put({ type: FETCH_REMOVE_FROM_CART_FAILURE, payload: error });
   }
 }
+function* fetchRemoveAllFromCart(action) {
+  try {
+    const res = yield call(api.getRemoveAllFromCart, {
+      user_id: action.user_id,
+    });
+
+    if (res.data.status) {
+      yield put({
+        type: FETCH_REMOVE_ALL_FROM_CART_SUCCESS,
+        cart_data: [],
+        total_Cart_Value: 0,
+        count_cart: 0,
+      });
+    }
+  } catch (error) {
+    yield put({ type: FETCH_REMOVE_ALL_FROM_CART_FAILURE, payload: error });
+  }
+}
 function* fetchUpdateCart(action) {
   try {
     const res = yield call(api.getUpdateCartData, {
@@ -179,7 +225,10 @@ function* fetchUpdateCart(action) {
       user_id: action.user_id,
       product_id: action.product_id,
     });
-    if (res) {
+    if (res.data.status === "success") {
+      yield put({ type: FETCH_ADD_TO_CART_UPDATE_SUCCESS, payload: res });
+    } else {
+      toast.error(res.data.message);
       yield put({ type: FETCH_ADD_TO_CART_UPDATE_SUCCESS, payload: res });
     }
   } catch (error) {
@@ -192,23 +241,161 @@ function* fetchAddToWihslist(action) {
       user_id: action.user_id,
       product_id: action.product_id,
     });
-    console.log("WISHLIST-->ADD-->", res);
 
     yield put({ type: FETCH_ADD_TO_WISHLIST_SUCCESS, payload: res.data });
   } catch (error) {
     yield put({ type: FETCH_ADD_TO_WISHLIST_FAILURE, payload: error.message });
   }
 }
+function* fetchOrderPlace(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.getPlaceOrder, {
+      user_id: action.user_id,
+      cart_data: action.cart_data,
+      totalPrice: action.totalOrderValue,
+      payment_mode: action.payment_mode,
+      order_status: action.order_status,
+      coupon_id: action.coupon_id,
+    });
+    console.log("Order Place Cash-->", res);
+
+    if (res.data.message) {
+      toast.success(res.data.message);
+      yield put({
+        type: SET_ORDER_SUCCESS,
+        cart_data: res.data.data,
+        order_quantity: res.data.total_ordered_items,
+        order_data: res.data.allOrders,
+        couponUsed: res.data.couponUsed,
+        couponName: res.data.code,
+      });
+    }
+  } catch (error) {
+    yield put({ type: SET_ORDER_FAILURE, payload: error.message });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchOrderPlaceOnlinePayment(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.getPlaceOrderOnlinePayment, {
+      user_id: action.user_id,
+      cart_data: action.cart_data,
+      totalPrice: action.totalOrderValue,
+      payment_mode: action.payment_mode,
+      order_status: action.order_status,
+      coupon_id: action.coupon_id,
+    });
+    const res1 = yield call(api.getRazorpay_key);
+    yield put({
+      type: SET_ONLINE_PAYMENT_ORDER_SUCCESS,
+      cart_data: res.data.data,
+      order_quantity: res.data.total_ordered_items,
+      order_data: res.data.allOrders,
+      order: res.data.order,
+      currentOrder: res.data.data,
+      key_id: res1.data.key,
+      couponUsed: res.data.couponUsed,
+      couponName: res.data.code,
+    });
+  } catch (error) {
+    yield put({ type: SET_ONLINE_PAYMENT_ORDER_ERROR, payload: error.message });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchOnlinePaymentSuccess(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.getOnlinePaymentSuccess, {
+      currentOrder: action.currentOrder,
+      razorpay_payment_id: action.razorpay_payment_id,
+      razorpay_order_id: action.razorpay_order_id,
+      razorpay_signature: action.razorpay_signature,
+    });
+
+    if (res.data.message) {
+      toast.success(res.data.message);
+      yield put({
+        type: GET_ONLINE_PAYMENT_SUCCESS_SUCCESS,
+        isAuthentic: res.data.data,
+        key_id: "",
+        razorpay_payment_id: "",
+        razorpay_order_id: "",
+        razorpay_signature: "",
+        order: [],
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: GET_ONLINE_PAYMENT_SUCCESS_FAILURE,
+      payload: error.message,
+    });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchOnlinePaymentFailed(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.getOnlinePaymentFailed, {
+      order_id: action.order_id,
+      user_id: action.user_id,
+    });
+    yield put({
+      type: GET_ONLINE_PAYMENT_FAILED_SUCCESS,
+      order_quantity: 0,
+      order_data: res.data.allOrders,
+      currentOrder: [],
+      isAuthentic: false,
+      razorpay_payment_id: "",
+      razorpay_order_id: "",
+      razorpay_signature: "",
+      key_id: "",
+      order: [],
+    });
+  } catch (error) {
+    yield put({
+      type: GET_ONLINE_PAYMENT_FAILED_SUCCESS,
+      payload: error.message,
+    });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchAllOrderDetails(action) {
+  try {
+    const pageLocal = localStorage.getItem("orderPage");
+    const res = yield call(api.getAllOrder, {
+      user_id: action.user_id,
+      page: action.page || pageLocal,
+      searchValue: action.searchValue || "All",
+      filterOrder: action.filterOrder || "All Orders",
+    });
+
+    if (res) {
+      yield put({
+        type: GET_ORDER_DETAILS_SUCCESS,
+        order_data: res.data.allOrders,
+        order_list: res.data.data_length,
+      });
+    }
+  } catch (error) {
+    yield put({ type: GET_ORDER_DETAILS_FAILURE, payload: error.message });
+  }
+}
+
 function* fetchWihslistDetails(action) {
   try {
-    console.log(
-      "action.payload1 details user_id_for_details------>",
-      action.user_id
-    );
     const res = yield call(api.getWishlistData, {
       user_id: action.user_id,
     });
-    console.log(res.data);
     yield put({
       type: FETCH_WISHLIST_DETAILS_SUCCESS,
       payload: res.data,
@@ -222,7 +409,6 @@ function* fetchWihslistDetails(action) {
 }
 function* fetchRemoveWishlistData(action) {
   try {
-    console.log(`step 2-------->${action.wishlist_id}`);
     yield call(api.getremoveWishlistData, {
       _id: action.wishlist_id,
     });
@@ -232,35 +418,60 @@ function* fetchRemoveWishlistData(action) {
   }
 }
 
+function* fetchRemoveAllFromWishlist(action) {
+  try {
+    const res = yield call(api.getRemoveAllFromWishlist, {
+      user_id: action.user_id,
+    });
+
+    if (res.data.status) {
+      toast.success(res.data.message);
+      yield put({
+        type: FETCH_REMOVE_ALL_FROM_WISHLIST_SUCCESS,
+        wishlist_data: [],
+        count_wishlist: 0,
+      });
+    }
+  } catch (error) {
+    yield put({ type: FETCH_REMOVE_ALL_FROM_CART_FAILURE, payload: error });
+  }
+}
+
 function* fetchLoginData(action) {
   try {
+    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getLogin, action.payload);
-    console.log("DATA--->res->", res);
-
-    if (res) {
+    if (res.status === 200) {
+      yield put({
+        type: FETCH_CART_DETAILS_REQUEST,
+        user_id: res.data.data.id,
+      });
+      yield put({
+        type: FETCH_WISHLIST_DETAILS_REQUEST,
+        user_id: res.data.data.id,
+      });
+      yield put({
+        type: FETCH_USER_DETAILS_REQUEST,
+        user_id: res.data.data.id,
+      });
+      yield put({
+        type: GET_ORDER_DETAILS_REQUEST,
+        user_id: res.data.data.id,
+        page: 1,
+        searchValue: "All",
+      });
+      yield put({
+        type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
+      });
       yield put({
         type: FETCH_LOGIN_SUCCESS,
         payload: res,
       });
     }
-
-    yield put({
-      type: FETCH_CART_DETAILS_REQUEST,
-      user_id: res.data.data.id,
-    });
-    yield put({
-      type: FETCH_WISHLIST_DETAILS_REQUEST,
-      user_id: res.data.data.id,
-    });
-    yield put({
-      type: FETCH_USER_DETAILS_REQUEST,
-      user_id: res.data.data.id,
-    });
-    yield put({
-      type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
-    });
   } catch (error) {
     yield put({ type: FETCH_LOGIN_FAILURE, payload: error });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
   }
 }
 
@@ -268,7 +479,7 @@ function* fetchSignupData(action) {
   try {
     yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getSignUp, action.payload);
-    if (res && res.status === 200) {
+    if (res && res.status === 201) {
       yield put({
         type: FETCH_SIGNUP_SUCCESS,
         payload: res,
@@ -283,11 +494,7 @@ function* fetchSignupData(action) {
 
 function* fetchUserData(action) {
   try {
-    console.log(action);
-
-    console.log("initial--->stage--->", action.user_id);
     const res = yield call(api.getUserData, action.user_id);
-    console.log(res.data);
 
     yield put({
       type: FETCH_USER_DETAILS_SUCCESS,
@@ -299,13 +506,26 @@ function* fetchUserData(action) {
 }
 function* fetchAddionalUserData(action) {
   try {
-    console.log("saga--->", action);
+    yield put({ type: SET_LOADING, payload: true });
     const res = yield call(api.getAdditionalData, action);
-    console.log("saga res---->", res);
     yield put({ type: FETCH_SET_USER_DATA_SUCCESS, payload: res });
   } catch (error) {
-    console.log("catch--->", error);
     yield put({ type: FETCH_SET_USER_DATA_FAILURE, payload: error });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchUploadProfilePhoto(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+
+    const res = yield call(api.uploadProfilePhoto, action.formData);
+    yield put({ type: IMAGE_UPLOAD_SUCCESS, payload: res });
+  } catch (error) {
+    yield put({ type: IMAGE_UPLOAD_FAILURE, payload: error });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
   }
 }
 
@@ -319,13 +539,13 @@ function* fetchResetPassword(action) {
         type: FETCH_RESET_USER_PASSWORD_SUCCESS,
         payload: res,
       });
-      yield put({ type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST });
-      yield put({ type: FETCH_LOGIN_EMPTY_REQUEST });
+      // yield put({ type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST });
     }
   } catch (error) {
     yield put({ type: FETCH_RESET_USER_PASSWORD_FAILURE, payload: error });
   } finally {
     yield put({ type: SET_LOADING, payload: false });
+    yield put({ type: FETCH_LOGIN_EMPTY_REQUEST });
   }
 }
 
@@ -349,20 +569,114 @@ function* fetchForgotPassword(action) {
     yield put({ type: SET_LOADING, payload: false });
   }
 }
+function* fetchReviewData(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.getReviewData, action);
 
+    yield put({ type: GET_REVIEW_SUCCESS, reviewData: res.data.data });
+  } catch (error) {
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+function* fetchGivingReview(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.setReview, action);
+
+    if (res.data.status === "true") {
+      toast.success(res.data.message);
+      yield put({ type: SET_REVIEW_SUCCESS, reviewData: res.data.data });
+    } else {
+      toast.error(res.data.message);
+      yield put({ type: SET_REVIEW_SUCCESS, reviewData: "" });
+    }
+  } catch (error) {
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
 function* fetchVerifyToken(action) {
   try {
+    yield put({ type: SET_LOADING, payload: true });
+
     const res = yield call(api.getVerifyToken, action.payload);
 
-    yield put({
-      type: FETCH_VERIFY_TOKEN_SUCCESS,
-      payload: res,
-    });
+    if (res.data.data._id) {
+      yield put({
+        type: FETCH_VERIFY_TOKEN_SUCCESS,
+        payload: res,
+      });
+      yield put({
+        type: FETCH_WISHLIST_DETAILS_REQUEST,
+        user_id: res.data.data._id,
+      });
+
+      yield put({
+        type: FETCH_CART_DETAILS_REQUEST,
+        user_id: res.data.data._id,
+      });
+      yield put({
+        type: FETCH_USER_DETAILS_REQUEST,
+        user_id: res.data.data._id,
+      });
+      yield put({
+        type: GET_ORDER_DETAILS_REQUEST,
+        user_id: res.data.data._id,
+        page: 1,
+        searchValue: "All",
+      });
+    }
   } catch (error) {
     yield put({
       type: FETCH_VERIFY_TOKEN_FAILURE,
       payload: error,
     });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
+  }
+}
+
+function* fetchApplyCoupon(action) {
+  try {
+    yield put({ type: SET_LOADING, payload: true });
+    const res = yield call(api.applyCoupon, action);
+    if (res.data.status === true) {
+      toast.success(res.data.message);
+      console.log("Saga Coupon Applied-->", res.data.price);
+
+      yield put({
+        type: SET_TOTAL_CART_VALUE_SUCCESS,
+        payload: res.data.price,
+      });
+      yield put({
+        type: SET_COUPON_SUCCESS,
+        cart_data: res.data.data,
+        code: res.data.code,
+        applied: res.data.status,
+        _id: res.data._id,
+        minCartValue: res.data.minCartValue,
+      });
+    } else {
+      toast.error(res.data.message);
+      yield put({
+        type: SET_TOTAL_CART_VALUE_SUCCESS,
+        payload: res.data.price,
+      });
+      yield put({
+        type: SET_COUPON_SUCCESS,
+        cart_data: res.data.data,
+        code: res.data.code,
+        applied: res.data.status,
+        _id: res.data._id,
+        minCartValue: res.data.minCartValue,
+      });
+    }
+  } catch (error) {
+    yield put({ type: SET_COUPON_FAILURE, payload: error });
+  } finally {
+    yield put({ type: SET_LOADING, payload: false });
   }
 }
 
@@ -375,9 +689,29 @@ export function* rootSaga() {
   yield takeEvery(FETCH_ADD_TO_CART_REQUEST, fetchAddToCart);
   yield takeEvery(FETCH_CART_DETAILS_REQUEST, fetchCartDetails);
   yield takeEvery(FETCH_REMOVE_FROM_CART_REQUEST, fetchRemoveCartData);
+  yield takeEvery(FETCH_REMOVE_ALL_FROM_CART_REQUEST, fetchRemoveAllFromCart);
   yield takeEvery(FETCH_ADD_TO_WISHLIST_REQUEST, fetchAddToWihslist);
   yield takeEvery(FETCH_WISHLIST_DETAILS_REQUEST, fetchWihslistDetails);
   yield takeEvery(FETCH_REMOVE_FROM_WISHLIST_REQUEST, fetchRemoveWishlistData);
+  yield takeEvery(
+    FETCH_REMOVE_ALL_FROM_WISHLIST_REQUEST,
+    fetchRemoveAllFromWishlist
+  );
+  yield takeEvery(SET_ORDER_REQUEST, fetchOrderPlace);
+  yield takeEvery(
+    SET_ONLINE_PAYMENT_ORDER_REQUEST,
+    fetchOrderPlaceOnlinePayment
+  );
+  yield takeEvery(GET_ORDER_DETAILS_REQUEST, fetchAllOrderDetails);
+  yield takeEvery(
+    GET_ONLINE_PAYMENT_SUCCESS_REQUEST,
+    fetchOnlinePaymentSuccess
+  );
+  yield takeEvery(GET_ONLINE_PAYMENT_FAILED_REQUEST, fetchOnlinePaymentFailed);
+  yield takeEvery(IMAGE_UPLOAD_REQUEST, fetchUploadProfilePhoto);
+  yield takeEvery(GET_REVIEW_REQUEST, fetchReviewData);
+  yield takeEvery(SET_REVIEW_REQUEST, fetchGivingReview);
+
   yield takeEvery(FETCH_LOGIN_REQUEST, fetchLoginData);
   yield takeEvery(FETCH_SIGNUP_REQUEST, fetchSignupData);
   yield takeEvery(FETCH_USER_DETAILS_REQUEST, fetchUserData);
@@ -386,4 +720,5 @@ export function* rootSaga() {
   yield takeEvery(FETCH_RESET_USER_PASSWORD_REQUEST, fetchResetPassword);
   yield takeEvery(FETCH_FORGOT_USER_PASSWORD_REQUEST, fetchForgotPassword);
   yield takeEvery(FETCH_VERIFY_TOKEN_REQUEST, fetchVerifyToken);
+  yield takeEvery(SET_COUPON_REQUEST, fetchApplyCoupon);
 }

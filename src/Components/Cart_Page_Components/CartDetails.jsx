@@ -1,38 +1,140 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../../Redux/api";
+
 import {
   getCartDetailsRequest,
+  getRemoveAllFromCart,
   getRemoveFromCart,
   getUpdateCartDataRequest,
 } from "../../Redux/Cart/cartAction";
-import { FETCH_CART_DETAILS_REQUEST } from "../../Redux/action";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
-const CartDetails = () => {
+import { memo, useEffect, useState } from "react";
+import {
+  applyCouponRequest,
+  removeCouponRequest,
+} from "../../Redux/Coupon/couponAction";
+import { setLoading } from "../../Redux/Loading/LoadingAction";
+import { BadgeAlert, BadgeCheck } from "lucide-react";
+import { setCouponUseStatusDefault } from "../../Redux/Order/orderAction";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+const CartDetails = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { cart_data } = useSelector((state) => state.cartReducer, shallowEqual);
-  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  let user_id = localStorage.getItem("id");
+  const [coupon, setCoupon] = useState("");
+  const {
+    id,
+    cart_data,
+    total_Cart_Value,
+    code,
+    applied,
+    minCartValue,
+    discountedCartValue,
+  } = useSelector(
+    (state) => ({
+      id: state.loginReducer.id,
+      cart_data: state.cartReducer.cart_data,
+      total_Cart_Value: state.cartReducer.total_Cart_Value,
+      code: state.couponReducer.code,
+      applied: state.couponReducer.applied,
+      minCartValue: state.couponReducer.minCartValue,
+      discountedCartValue: state.cartReducer.discountedCartValue,
+    }),
+    shallowEqual
+  );
+  function handleChange(e) {
+    e.preventDefault();
+    setCoupon(e.target.value);
+  }
+  function handleClick(e) {
+    e.preventDefault();
+    if (cart_data.length > 0) {
+      dispatch(getRemoveAllFromCart(id));
+      dispatch(removeCouponRequest());
+      toast.success("Now cart is empty!");
+    } else toast.error("Your cart is empty nothing can't be removed!");
+  }
+  function handleSubmitCoupon(e) {
+    e.preventDefault();
+    if (coupon === "") {
+      toast.error("Please enter a valid coupon!");
+    } else {
+      dispatch(applyCouponRequest(id, cart_data, coupon));
+      setCoupon("");
+    }
+  }
+  function handleRemoveCoupon(e) {
+    e.preventDefault();
+    dispatch(setLoading(true));
+    setTimeout(() => {
+      dispatch(removeCouponRequest());
+      toast.success("Coupon removed!");
+      dispatch(setLoading(false));
+    }, 1500);
+  }
   useEffect(() => {
-    dispatch({
-      type: FETCH_CART_DETAILS_REQUEST,
-      user_id: id || user_id,
-    });
-  }, []);
+    if (applied && total_Cart_Value < 2500 && code === "OFF200") {
+      dispatch(setLoading(true));
+      setTimeout(() => {
+        dispatch(removeCouponRequest());
+        dispatch(setLoading(false));
+      }, 1000);
+    }
+
+    if (applied && cart_data.length === 0) {
+      dispatch(setLoading(true));
+      setTimeout(() => {
+        dispatch(removeCouponRequest());
+        dispatch(setLoading(false));
+      }, 1000);
+    }
+
+    if (applied && total_Cart_Value < minCartValue) {
+      dispatch(setLoading(true));
+      setTimeout(() => {
+        dispatch(removeCouponRequest());
+        dispatch(setLoading(false));
+      }, 1000);
+    }
+  }, [total_Cart_Value, code, applied, minCartValue, cart_data]);
+
+  console.log("Total Cart Value", total_Cart_Value);
+
+  const style = {
+    padding: "2px",
+    backgroundColor: "#0011",
+    maxWidth: "45%",
+    borderRadius: "50px",
+    marginTop: "5px",
+    height: "30px",
+  };
+  const styleError = {
+    color: "red",
+    fontWeight: "bold",
+    fontStyle: "italic",
+  };
+  const styleSuccess = {
+    color: "green",
+    fontWeight: "bold",
+    fontStyle: "italic",
+  };
+
+  const [isButtonDisabledDec, setIsButtonDisabledDec] = useState(false);
+  const [isButtonDisabledInc, setIsButtonDisabledInc] = useState(false);
 
   return (
     <div className="container-fluid py-5">
       <div className="container py-5">
+        <div className="text-end mb-3">
+          <button className="btn btn-primary" onClick={handleClick}>
+            Clear All
+          </button>
+        </div>
         <div className="table-responsive">
-          {cart_data.length !== 0 ? (
+          {cart_data?.length !== 0 ? (
             <table className="table">
               <thead>
                 <tr>
@@ -45,7 +147,7 @@ const CartDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {cart_data.map((cart) => (
+                {cart_data?.map((cart) => (
                   <tr key={cart._id}>
                     <th scope="row">
                       <div className="d-flex align-items-center">
@@ -77,7 +179,7 @@ const CartDetails = () => {
                       </p>
                     </td>
                     <td>
-                      <p className="mb-0 mt-4">{cart.product_price} ₹</p>
+                      <p className="mb-0 mt-4">₹{cart.product_price}</p>
                     </td>
                     <td>
                       <div
@@ -87,9 +189,19 @@ const CartDetails = () => {
                         <div className="input-group-btn">
                           <button
                             className="btn btn-sm btn-minus rounded-circle bg-light border"
+                            disabled={isButtonDisabledDec}
                             onClick={(e) => {
                               e.preventDefault();
+
+                              if (isButtonDisabledDec) return;
+
+                              setIsButtonDisabledDec(true);
+
                               if (cart.quantity > 1) {
+                                console.log(
+                                  "cart.quantity>>>>>>>>>>>",
+                                  cart.quantity
+                                );
                                 dispatch(
                                   getUpdateCartDataRequest(
                                     "dec",
@@ -98,11 +210,14 @@ const CartDetails = () => {
                                     cart.product_id
                                   )
                                 );
-                                // dispatch(getCartDetailsRequest(id));
                               }
                               if (cart.quantity === 1) {
                                 toast.error("You cant set the quantity at 0");
                               }
+
+                              setTimeout(() => {
+                                setIsButtonDisabledDec(false);
+                              }, 500);
                             }}
                           >
                             <i className="fa fa-minus"></i>
@@ -116,6 +231,7 @@ const CartDetails = () => {
                         <div className="input-group-btn">
                           <button
                             className="btn btn-sm btn-plus rounded-circle bg-light border"
+                            disabled={isButtonDisabledInc}
                             onClick={(e) => {
                               e.preventDefault();
                               if (cart.quantity < 5) {
@@ -127,13 +243,15 @@ const CartDetails = () => {
                                     cart.product_id
                                   )
                                 );
-                                // dispatch(getCartDetailsRequest(id));
                               }
                               if (cart.quantity === 5) {
                                 toast.error(
                                   "You cant buy a product more than 5"
                                 );
                               }
+                              setTimeout(() => {
+                                setIsButtonDisabledInc(false);
+                              }, 500);
                             }}
                           >
                             <i className="fa fa-plus"></i>
@@ -142,7 +260,7 @@ const CartDetails = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="mb-0 mt-4">{cart.total_price} ₹</p>
+                      <p className="mb-0 mt-4">₹{cart.total_price}</p>
                     </td>
                     <td>
                       <button
@@ -152,7 +270,7 @@ const CartDetails = () => {
                           dispatch(getRemoveFromCart(cart._id, id));
                           setTimeout(() => {
                             dispatch(getCartDetailsRequest(id));
-                          }, 300);
+                          }, 100);
                         }}
                       >
                         <i className="fa fa-times text-danger"></i>
@@ -169,18 +287,65 @@ const CartDetails = () => {
           )}
         </div>
         <div className="mt-5">
-          <input
-            type="text"
-            className="border-0 border-bottom rounded me-5 py-3 mb-4"
-            placeholder="Coupon Code"
-          />
-          <button
-            className="btn border-secondary rounded-pill px-4 py-3 text-primary"
-            type="button"
-          >
-            Apply Coupon
-          </button>
+          {applied === false ? (
+            <input
+              type="text"
+              className="border border-bottom  rounded me-5 py-3 mb-4"
+              placeholder="Coupon Code"
+              defaultValue={"Coupon Code"}
+              value={coupon}
+              style={{ padding: "20px", fontWeight: "bolder" }}
+              onChange={handleChange}
+            />
+          ) : (
+            <input
+              className="border border-bottom  rounded me-5 py-3 mb-4"
+              style={{
+                padding: "10px",
+                width: "300px",
+                fontWeight: "bolder",
+                fontStyle: "italic",
+                backgroundColor: "yellowgreen",
+                color: "#fff",
+              }}
+              value={`${code} Coupon Applied`}
+              disabled={true}
+            />
+          )}
+          {applied === false ? (
+            <button
+              className="btn border-secondary rounded-pill px-4 py-3 text-primary"
+              type="button"
+              style={{ cursor: "pointer" }}
+              disabled={cart_data.length === 0 ? true : false}
+              onClick={handleSubmitCoupon}
+            >
+              Apply Coupon
+            </button>
+          ) : (
+            <button
+              className="btn border-secondary rounded-pill px-4 py-3 text-primary"
+              onClick={handleRemoveCoupon}
+            >
+              Remove Coupon
+            </button>
+          )}
         </div>
+        {total_Cart_Value >= 2500 && applied === false ? (
+          <div style={style}>
+            <p style={styleSuccess}>
+              <BadgeCheck /> Use "OFF200" coupon code for flat 200 ₹ ruppess off
+              on your shopping!
+            </p>
+          </div>
+        ) : (
+          <div style={style}>
+            <p style={styleError}>
+              <BadgeAlert /> Please don't use ctrl+R/hard-refresh during you use
+              any coupon
+            </p>
+          </div>
+        )}
         <div className="row g-4 justify-content-end">
           <div className="col-8"></div>
           <div className="col-sm-8 col-md-7 col-lg-6 col-xl-4">
@@ -191,26 +356,66 @@ const CartDetails = () => {
                 </h1>
                 <div className="d-flex justify-content-between mb-4">
                   <h5 className="mb-0 me-4">Subtotal:</h5>
-                  <p className="mb-0">$96.00</p>
+                  <p className="mb-0">₹{total_Cart_Value} </p>
                 </div>
                 <div className="d-flex justify-content-between">
                   <h5 className="mb-0 me-4">Shipping</h5>
                   <div className="">
-                    <p className="mb-0">Flat rate: $3.00</p>
+                    <p className="mb-0">Fixed rate: ₹40 </p>
                   </div>
                 </div>
-                <p className="mb-0 text-end">Shipping to Ukraine.</p>
               </div>
               <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                 <h5 className="mb-0 ps-4 me-4">Total</h5>
-                <p className="mb-0 pe-4">$99.00</p>
+                {code !== "" ? (
+                  <div>
+                    <p
+                      className="mb-0"
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bolder",
+                        fontStyle: "italic",
+                        border: "2px solid green",
+                        borderRadius: "20px",
+                        padding: "5px",
+                        backgroundColor: "yellowGreen",
+                        color: "#fff",
+                        width: "130px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "40px",
+                      }}
+                    >
+                      Coupon Applied
+                    </p>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {applied ? (
+                  <p className="mb-0 pe-4">
+                    {cart_data.length !== 0
+                      ? `₹${parseInt(discountedCartValue + 40)}`
+                      : `₹0`}
+                  </p>
+                ) : (
+                  <p className="mb-0 pe-4">
+                    {cart_data.length !== 0
+                      ? `₹${parseInt(total_Cart_Value + 40)}`
+                      : `₹0`}
+                  </p>
+                )}
               </div>
               <button
                 className="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/checkout");
+                  if (cart_data.length !== 0) {
+                    dispatch(setCouponUseStatusDefault());
+                    navigate("/checkout");
+                  } else toast.error("Please add a product on cart!");
                 }}
               >
                 Proceed Checkout
@@ -221,5 +426,5 @@ const CartDetails = () => {
       </div>
     </div>
   );
-};
+});
 export default CartDetails;

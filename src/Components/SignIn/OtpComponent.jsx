@@ -1,29 +1,27 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
-import "./VerifyOTP.css"; // Assuming CSS code is in VerifyOTP.css
-// import { toast } from "react-toastify";
+import "./VerifyOTP.css";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../Redux/api";
+
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../../Redux/Loading/LoadingAction";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const OtpComponent = () => {
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState(Array(6).fill("")); // State to store OTP input values
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Track if the button should be disabled
-  const inputRefs = useRef([]); // Ref to store the input elements
+  const [inputs, setInputs] = useState(Array(6).fill(""));
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const inputRefs = useRef([]);
 
-  // Focus the first input field on load
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
 
-  // Handle input change for OTP fields
   const handleInputChange = (e, index) => {
     e.preventDefault();
     const value = e.target.value;
 
-    if (value.length > 1) return; // Prevent entering more than one digit
+    if (value.length > 1) return;
 
     const newInputs = [...inputs];
     newInputs[index] = value;
@@ -36,7 +34,6 @@ const OtpComponent = () => {
     checkButtonStatus(newInputs);
   };
 
-  // Handle paste event for OTP
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedValue = e.clipboardData.getData("text");
@@ -54,46 +51,16 @@ const OtpComponent = () => {
     checkButtonStatus(newInputs);
   };
 
-  // Handle backspace logic
   const handleBackspace = (e, index) => {
     if (e.key === "Backspace" && index > 0 && inputs[index] === "") {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // Handle paste event for OTP
-
-  // Check if the button should be enabled or disabled
   const checkButtonStatus = (inputs) => {
     const isValid = !inputs.includes("");
     setIsButtonDisabled(!isValid); // Enable button if all fields are filled
   };
-
-  // Handle OTP verification
-  // const handleVerify = (e) => {
-  //   e.preventDefault();
-  //   const handleFetch = async () => {
-  //     const response = {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ otp: inputs.join("") }),
-  //     };
-  //     await fetch(`${BASE_URL}/user/verify_otp`, response)
-  //       .then((data) => {
-  //         return data.json();
-  //       })
-  //       .then((data) => {
-  //         console.log("data----->", data);
-  //         setLoading(false);
-  //         toast.success(data.message);
-  //         localStorage.setItem("id", data.id);
-  //         if (data.success) {
-  //           navigate("/set_new_password");
-  //         }
-  //       });
-  //   };
-  //   handleFetch();
-  // };
 
   const handleVerify = (e) => {
     e.preventDefault();
@@ -105,7 +72,6 @@ const OtpComponent = () => {
         body: JSON.stringify({ otp: inputs.join("") }),
       };
 
-      // Wrap the fetch request with toast.promise
       toast.promise(
         fetch(`${BASE_URL}/user/verify_otp`, response).then((data) => {
           return data.json();
@@ -113,14 +79,13 @@ const OtpComponent = () => {
         {
           loading: "Verifying OTP...",
           success: (data) => {
-            console.log("data----->", data);
             localStorage.setItem("id", data.id);
 
             if (data.success) {
               navigate("/set_new_password");
-              return data.message; // Success message
+              return data.message;
             } else {
-              throw new Error(data.message); // Trigger error toast if OTP is incorrect
+              throw new Error(data.message);
             }
           },
           error: (err) => {

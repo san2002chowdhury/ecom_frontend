@@ -1,4 +1,3 @@
-// import setCookie from "../../utils/setCookie";
 import {
   FETCH_LOGIN_EMPTY_REQUEST,
   FETCH_LOGIN_FAILURE,
@@ -10,15 +9,16 @@ import {
   FETCH_VERIFY_TOKEN_REQUEST,
   FETCH_VERIFY_TOKEN_SUCCESS,
 } from "../action";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 
 const initialState = {
   payload: [],
   token: "",
-  resutl: "",
+  result: "",
   id: "",
   name: "",
+  showSignin: false,
+
   error: null,
 };
 const loginReducer = (state = initialState, action) => {
@@ -30,25 +30,26 @@ const loginReducer = (state = initialState, action) => {
       };
     case FETCH_LOGIN_SUCCESS:
       localStorage.setItem("token", action.payload.data.token);
-      localStorage.setItem("userData", JSON.stringify(action.payload.data));
       localStorage.setItem("name", action.payload.data.data.name);
       localStorage.setItem("id", action.payload.data.data.id);
+      localStorage.setItem("showSignin", true);
+      localStorage.setItem("isPasswordReset", false);
 
       toast.success(action.payload?.data?.result);
-      console.log("MESSAGE-->ALERT-->", action.payload?.data?.result);
-      // setCookie("token", action.payload.data.token, 60);
       return {
         type: FETCH_LOGIN_SUCCESS,
-        payload: action.payload.data,
+        payload: action.payload.data.data,
         token: action.payload.data.token,
         name: action.payload.data.data.name,
         id: action.payload.data.data.id,
+        showSignin: true,
       };
     case FETCH_LOGIN_FAILURE:
       toast.error(action.payload?.response?.data?.message);
       return {
         type: FETCH_LOGIN_FAILURE,
         error: action.payload.message,
+        showSignin: false,
       };
     case FETCH_SIGNUP_REQUEST:
       return {
@@ -56,7 +57,6 @@ const loginReducer = (state = initialState, action) => {
         payload: action.payload,
       };
     case FETCH_SIGNUP_SUCCESS:
-      // console.log("FETCH SIGNUP REQUEST------>", action.payload);
       toast.success(action.payload?.data?.result);
 
       return {
@@ -64,36 +64,32 @@ const loginReducer = (state = initialState, action) => {
         payload: action.payload.data,
       };
     case FETCH_SIGNUP_FAILURE:
-      // console.log("FETCH SIGNUP REQUEST------>", action.payload);
       return {
         type: FETCH_SIGNUP_FAILURE,
         error: action.payload.message,
       };
     case FETCH_VERIFY_TOKEN_REQUEST:
-      // console.log("FETCH VERIFY TOKEN REQUEST", action.payload);
-
       return {
         type: FETCH_VERIFY_TOKEN_REQUEST,
         token: action.payload.token,
       };
     case FETCH_VERIFY_TOKEN_SUCCESS:
-      // console.log("FETCH VERIFY TOKEN SUCCESS", action.payload);
-
       localStorage.setItem("flag", 1);
+      localStorage.setItem("isPasswordReset", false);
       return {
         type: FETCH_VERIFY_TOKEN_SUCCESS,
         id: action.payload.data.id.id,
         payload: action.payload.data.data,
         token: action.payload.data.data.token,
         name: action.payload.data.data.name,
+        showSignin: true,
       };
-
     case FETCH_LOGIN_EMPTY_REQUEST:
       return {
         type: FETCH_LOGIN_EMPTY_REQUEST,
         payload: [],
         token: "",
-        resutl: "",
+        result: "",
         id: "",
         name: "",
         error: null,

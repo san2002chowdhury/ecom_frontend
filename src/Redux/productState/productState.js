@@ -14,7 +14,6 @@ const productSlice = createSlice({
     },
     setProductTitle(state, action) {
       state.productTitle = action.payload;
-      console.log("log-------------------->TITLE---->", state.productTitle);
     },
     setProductTitleFailure(state, action) {
       state.error = action.payload;

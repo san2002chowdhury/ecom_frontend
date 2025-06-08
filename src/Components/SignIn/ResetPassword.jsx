@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getResetPasswordRequest } from "../../Redux/User/userAction";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { BadgeCheck } from "lucide-react";
+import { BadgeAlert } from "lucide-react";
+
 // import { getLoginEmpty } from "../../Redux/Login/LoginAction";
 const ResetPassword = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState({
     newPassword: "",
@@ -12,12 +14,13 @@ const ResetPassword = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  const { isPasswordReset } = useSelector(
-    (state) => state.userReducer,
+  const { id, isPasswordReset } = useSelector(
+    (state) => ({
+      id: state.loginReducer.id,
+      isPasswordReset: state.userReducer.isPasswordReset,
+    }),
     shallowEqual
   );
-  console.log(">>>>>>isPasswordReset>>>>>", isPasswordReset);
 
   useEffect(() => {
     if (input.confirmPassword && input.newPassword !== input.confirmPassword) {
@@ -26,7 +29,6 @@ const ResetPassword = () => {
       setError("");
       setSuccess(`Everything is fine `);
     }
-    console.log("isPasswordReset------>", isPasswordReset);
 
     if (isPasswordReset) {
       localStorage.removeItem("token");
@@ -48,61 +50,73 @@ const ResetPassword = () => {
       confirmPassword: "",
     });
   }
-
+  const style = {
+    color: "red",
+    fontWeight: "bold",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleSuccess = {
+    color: "green",
+    fontWeight: "bolder",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleBackground = {
+    marginTop: "10px",
+    padding: "3px",
+    backgroundColor: "#0013",
+    maxWidth: "60%",
+    borderRadius: "50px",
+  };
   return (
-    <div style={{ marginTop: "100px" }}>
-      {console.log(">>>>isPasswordReset>>>>", isPasswordReset)}
-      {!isPasswordReset ? (
-        <button
-          className="btn btn-info"
-          style={{ marginTop: "100px", marginLeft: "300px" }}
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/account");
-          }}
-        >
-          &#8617; Account Page
-        </button>
-      ) : (
-        <div style={{ marginTop: "300px ", marginBottom: "200px" }}>
-          <h2 style={{ textAlign: "center", marginTop: "50px" }}>
-            Please Go <Link to="/">Home-Page</Link> At first Logout,then Login
-            Again 😀🤍!
-          </h2>
-        </div>
-      )}
+    <div style={{ marginTop: "200px" }}>
       {!isPasswordReset ? (
         <div
           className="col-lg-3"
           style={{
-            margin: "50px auto",
+            marginTop: "200px",
+            marginBottom: "70px",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
-          <h1>Reset Password</h1>
+          <h1 style={{ textAlign: "center" }}>Forgot Password</h1>
+          <hr />
           <input
             type="password"
             value={input.newPassword}
-            placeholder="new password"
+            placeholder="New Password"
             name="newPassword"
-            onChange={(e) => handleInput(e)}
-            style={{ marginTop: "15px", width: "100%" }}
+            onChange={(e) => {
+              handleInput(e);
+            }}
+            style={{ padding: "5px", marginTop: "15px", width: "100%" }}
           />
           <br />
           <input
             type="password"
             value={input.confirmPassword}
-            placeholder="confirm password"
+            placeholder="Confirm Password"
             name="confirmPassword"
             onChange={(e) => handleInput(e)}
-            style={{ marginTop: "15px", width: "100%" }}
+            style={{ padding: "5px", marginTop: "15px", width: "100%" }}
           />
           {error ? (
-            <div style={{ color: "red", marginTop: "5px" }}>{error}</div>
+            <div style={styleBackground}>
+              <p style={style}>
+                <BadgeAlert /> {error}
+              </p>
+            </div>
           ) : input.confirmPassword === "" ? (
             <></>
           ) : (
-            <div style={{ color: "green", marginTop: "5px" }}>
-              {success} &#9989;
+            <div style={styleBackground}>
+              <p style={styleSuccess}>
+                <BadgeCheck /> {success}
+              </p>
             </div>
           )}
 
@@ -115,7 +129,15 @@ const ResetPassword = () => {
           </button>
         </div>
       ) : (
-        <></>
+        <>
+          <h2 style={{ textAlign: "center", marginTop: "150px" }}>
+            Password Changed successfully,
+          </h2>
+
+          <h2 style={{ textAlign: "center", marginBottom: "150px" }}>
+            Please Go <Link to="/">Home-Page</Link> And Login Again 😀🤍!
+          </h2>
+        </>
       )}
     </div>
   );

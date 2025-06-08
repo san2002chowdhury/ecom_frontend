@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
-
-import { BASE_URL } from "../../Redux/api";
-
-import toast from "react-hot-toast";
 /* eslint-disable jsx-a11y/iframe-has-title */
+import { useState } from "react";
+import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ContactDetails = () => {
   const [inputForGetInTouch, setInputForGetInTouch] = useState({
     name: "",

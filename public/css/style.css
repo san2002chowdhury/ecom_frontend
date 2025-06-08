@@ -133,6 +133,7 @@
 .fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
     color: var(--bs-primary);
+    font-weight: 500;
 }
 
 .navbar .dropdown-toggle::after {

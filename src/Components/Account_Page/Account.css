@@ -40,3 +40,60 @@
 }
 
 
+.uploadIcon {
+    position: absolute;
+    bottom: -40px;
+    right: 5px;
+    background-color: #59e408;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }
+  .uploadIcon:hover {
+    position: absolute;
+    bottom: -40px;
+    right: 5px;
+    background-color: #08b1e4;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+
+  }
+  .profile-image-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 60px;
+  }
+  
+  .profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #59e408;
+    transition: all 0.3s ease;
+  }
+  .image {
+    max-width:150px;
+    border-radius: 50%;
+    border: 4px solid #59e408;
+    transition: all 0.3s ease;
+}
+.image:hover {
+    max-width: 150px;
+    border-radius: 50%;
+    border: 4px solid #f2f53d;
+    transition: all 0.3s ease;
+}

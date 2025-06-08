@@ -1,25 +1,22 @@
-// import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   setCurrPage,
   setPage,
 } from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
 
-/* eslint-disable jsx-a11y/anchor-is-valid */
-const Pagination = () => {
+const Pagination = memo(() => {
   const dispatch = useDispatch();
-  const { length } = useSelector((state) => state.productReducer, shallowEqual);
-  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
-  const { currPage } = useSelector(
-    (state) => state.universalReducer,
+  const { length, page, currPage } = useSelector(
+    (state) => ({
+      length: state.productReducer.length,
+      page: state.universalReducer.page,
+      currPage: state.universalReducer.currPage,
+    }),
     shallowEqual
   );
-
-  console.log("LENGTH---->", length);
-
   const page_size = 12;
   const no_pages = Math.ceil(length / page_size);
-  // const [currPage, setCurrPage] = useState(page);
 
   return (
     <div className="col-12">
@@ -31,7 +28,6 @@ const Pagination = () => {
             e.preventDefault();
             dispatch(setPage(page * 1 - 1));
             dispatch(setCurrPage(page * 1 - 1));
-            // alert(page);
           }}
           disabled={currPage === 1 ? true : false}
         >
@@ -61,7 +57,6 @@ const Pagination = () => {
             e.preventDefault();
             dispatch(setPage(page * 1 + 1));
             dispatch(setCurrPage(page * 1 + 1));
-            // alert(page);
           }}
           disabled={currPage === no_pages * 1 ? true : false}
         >
@@ -71,5 +66,5 @@ const Pagination = () => {
       </div>
     </div>
   );
-};
+});
 export default Pagination;

@@ -1,95 +1,44 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import React, { memo, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { assets } from "../../assets/asset";
 import Signin from "../SignIn/Signin";
-import {
-  setUserIDFetch,
-  setUserNameSuccess,
-} from "../../Redux/Login/LoginState";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  FETCH_CART_DETAILS_REQUEST,
-  FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
-  FETCH_USER_DETAILS_REQUEST,
-  FETCH_WISHLIST_DETAILS_REQUEST,
-} from "../../Redux/action";
-// import { toast } from "react-toastify";
-import toast from "react-hot-toast";
-import { getUserDetailsRequest } from "../../Redux/User/userAction";
-import setCookie from "../../utils/setCookie";
-import {
-  getLoginEmpty,
-  getVerifyTokenRequest,
-} from "../../Redux/Login/LoginAction";
-import { BASE_URL } from "../../Redux/api";
-import handleRequest from "../../utils/verifyToken";
-import {
-  setDefault,
-  setShowSignin,
-} from "../../Redux/UniversalStore/UnivarSalState";
 
-// const Navbar = {
-//   // showSignin,
-//   //  setShowSignin,
-//   userData,
-//   setBackground,
-// };
-const Navbar = React.memo(() => {
-  const { showSignin } = useSelector(
-    (state) => state.universalReducer,
-    shallowEqual
-  );
-  const Data = JSON.parse(localStorage.getItem("userData"));
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import {
+  setActive,
+  setCategoryName,
+  setDefault,
+  setInActive,
+} from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
+import { setLoading } from "../../Redux/Loading/LoadingAction";
+
+const Navbar = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let location = useLocation();
-
-  let { id, name } = useSelector((state) => state.loginReducer, shallowEqual);
-
-  // let localToken = localStorage.getItem("token");
-
-  const user_name = (name || localStorage.getItem("name"))
-    ?.split(" ")
-    ?.map((el) => el.charAt(0).toUpperCase())
-    ?.join("");
-
-  const closeModal = () => setShowModal(false);
-
-  localStorage.setItem("flag", 0);
-  let user_id = localStorage.getItem("id");
-
-  console.log("we->nav->");
-
-  const user = useSelector((state) => state.user);
-  useEffect(() => {
-    if (id && !showSignin) {
-      localStorage.setItem("isPasswordReset", false);
-      dispatch(setUserIDFetch(id));
-      dispatch(setShowSignin(true));
-      closeModal(true);
-      dispatch(setUserNameSuccess(name));
-    } else if (id === undefined || !id) {
-      dispatch(setShowSignin(false));
-    } else {
-      return;
-    }
-  }, [dispatch, id, showSignin]);
-
-  const { count_wishlist } = useSelector(
-    (state) => state.wishlistReducer,
-    shallowEqual
-  );
-
-  const { count_cart } = useSelector(
-    (state) => state.cartReducer,
-    shallowEqual
-  );
-
   const [showModal, setShowModal] = useState(false);
-  const openModal = () => setShowModal(true);
+
+  const closeModal = useCallback(() => setShowModal(false), []);
+  const openModal = useCallback(() => setShowModal(true), []);
+  const { showSignin, name, count_wishlist, count_cart, active } = useSelector(
+    (state) => ({
+      showSignin: state.loginReducer.showSignin,
+      name: state.loginReducer.name,
+      count_wishlist: state.wishlistReducer.count_wishlist,
+      count_cart: state.cartReducer.count_cart,
+      active: state.universalReducer.active,
+    }),
+    shallowEqual
+  );
+  const user_name = useMemo(() => {
+    return (localStorage.getItem("name") || name)
+      ?.split(" ")
+      ?.map((el) => el.charAt(0).toUpperCase())
+      ?.join("");
+  }, [name]);
+
   return (
     <div className="container-fluid fixed-top">
       <div className="container topbar bg-primary d-none d-lg-block">
@@ -142,14 +91,19 @@ const Navbar = React.memo(() => {
                 className={`nav-item nav-link ${
                   location.pathname === "/" && "active"
                 }`}
+                onClick={() => dispatch(setInActive())}
               >
                 Home
               </Link>
               <Link
                 to="/shop"
-                onClick={() => dispatch(setDefault())}
+                onClick={() => {
+                  dispatch(setDefault());
+                  dispatch(setCategoryName("All Products"));
+                  dispatch(setActive("Shop"));
+                }}
                 className={`nav-item nav-link ${
-                  location.pathname === "/shop" && "active"
+                  active === "Shop" ? "active" : ""
                 }`}
               >
                 Shop
@@ -160,21 +114,20 @@ const Navbar = React.memo(() => {
                   className={`nav-item nav-link ${
                     location.pathname === "/wishlist" && "active"
                   }`}
+                  onClick={() => dispatch(setInActive())}
                 >
                   Wishlist
-                  {count_wishlist >= 0 && (
-                    <span
-                      className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                      style={{
-                        top: "18px",
-                        left: "800px",
-                        height: "20px",
-                        width: "20px",
-                      }}
-                    >
-                      {count_wishlist}
-                    </span>
-                  )}
+                  <span
+                    className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                    style={{
+                      top: "18px",
+                      left: "800px",
+                      height: "20px",
+                      width: "20px",
+                    }}
+                  >
+                    {count_wishlist}
+                  </span>
                 </Link>
               )}
 
@@ -183,6 +136,7 @@ const Navbar = React.memo(() => {
                 className={`nav-item nav-link ${
                   location.pathname === "/contact" && "active"
                 }`}
+                onClick={() => dispatch(setInActive())}
               >
                 Contact
               </Link>
@@ -190,7 +144,10 @@ const Navbar = React.memo(() => {
                 <Link
                   to="/cart"
                   className="position-relative me-4 my-auto"
-                  style={{ marginLeft: "100px" }}
+                  style={{
+                    marginLeft: "100px",
+                  }}
+                  onClick={() => dispatch(setInActive())}
                 >
                   <i className="fa fa-shopping-bag fa-2x"></i>
                   <span
@@ -206,24 +163,7 @@ const Navbar = React.memo(() => {
                   </span>
                 </Link>
               )}
-              {showSignin === false ? (
-                <>
-                  <div>
-                    <button className="btn btn-primary" onClick={openModal}>
-                      <i className="fas fa-user fa-1x"> Login</i>
-                    </button>
-
-                    <div
-                      className={`modal fade ${showModal ? "show" : ""}`}
-                      tabIndex="-1"
-                      style={{ display: showModal ? "block" : "none" }}
-                      aria-hidden={!showModal}
-                    >
-                      <Signin closeModal={closeModal} />
-                    </div>
-                  </div>
-                </>
-              ) : (
+              {showSignin ? (
                 <>
                   {" "}
                   <div
@@ -236,10 +176,11 @@ const Navbar = React.memo(() => {
                       onClick={(e) => {
                         e.preventDefault();
                         navigate("/account");
+                        dispatch(setInActive());
                       }}
                     >
                       <i
-                        className="fas fa-user fa-1x 
+                        className="fas fa-user fa-1x
                     btn btn-primary nav-link dropdown-toggle
                     "
                       >
@@ -252,18 +193,15 @@ const Navbar = React.memo(() => {
                         className="dropdown-item btn btn-primary"
                         onClick={(e) => {
                           e.preventDefault();
-                          const loadingToast = toast.success(
-                            "logout done successfully"
-                          );
-
+                          dispatch(setLoading(true));
+                          toast.success("logout done successfully");
                           navigate("/");
+                          dispatch(setInActive());
                           setTimeout(() => {
                             window.location.reload();
                             localStorage.clear();
+                            dispatch(setLoading(false));
                           }, 1000);
-                          setTimeout(() => {
-                            toast.promise(loadingToast);
-                          }, 3000);
                         }}
                       >
                         Logout
@@ -280,11 +218,30 @@ const Navbar = React.memo(() => {
                       <button
                         className="dropdown-item btn btn-primary"
                         onClick={(e) => {
+                          dispatch(setInActive());
                           e.preventDefault();
+                          navigate("/myorder");
                         }}
                       >
                         My Orders
                       </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <button className="btn btn-primary" onClick={openModal}>
+                      <i className="fas fa-user fa-1x"> Login</i>
+                    </button>
+
+                    <div
+                      className={`modal fade ${showModal ? "show" : ""}`}
+                      tabIndex="-1"
+                      style={{ display: showModal ? "block" : "none" }}
+                      aria-hidden={!showModal}
+                    >
+                      <Signin closeModal={closeModal} />
                     </div>
                   </div>
                 </>

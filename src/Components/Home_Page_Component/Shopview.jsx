@@ -1,11 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  FETCH_PRODUCTS_REQUEST,
-  FETCH_TOP_CATEGORY_REQUEST,
-} from "../../Redux/action";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../../Redux/api";
 import { setProductTitle } from "../../Redux/productState/productState";
 import { Link, useNavigate } from "react-router-dom";
 import { getProductDetailsRequest } from "../../Redux/Products/ProductAction";
@@ -18,34 +12,26 @@ import {
   getAddToWishlistRequest,
   getWishlistDataRequest,
 } from "../../Redux/Wishlist/wishlistAction";
-import { setActive } from "../../Redux/UniversalStore/UnivarSalState";
-// import { memo } from "react";
+import {
+  setActive,
+  setCategoryName,
+} from "../../Redux/UniversalStore/UnivarSalState";
+import { memo } from "react";
+import "./external.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const Shopview = () => {
-  const [catValue, setCatValue] = useState("All");
+const Shopview = memo(({ catValue, setCatValue }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { categories } = useSelector(
-    (state) => state.categoryReducer,
+
+  const { categories, id, products } = useSelector(
+    (state) => ({
+      categories: state.categoryReducer.categories,
+      id: state.loginReducer.id,
+      products: state.productReducer.products,
+    }),
     shallowEqual
   );
-  const { id } = useSelector((state) => state.loginReducer, shallowEqual);
-  const { products } = useSelector(
-    (state) => state.productReducer,
-    shallowEqual
-  );
-
-  useEffect(() => {
-    dispatch({ type: FETCH_TOP_CATEGORY_REQUEST });
-
-    dispatch({
-      type: FETCH_PRODUCTS_REQUEST,
-      page: 1,
-      cat_id: catValue,
-      filter: 1,
-      search: "All",
-    });
-  }, [dispatch, catValue]);
 
   return (
     <div className="container-fluid fruite py-5">
@@ -62,8 +48,6 @@ const Shopview = () => {
                     className={`btn d-flex m-2 py-2 bg-light rounded-pill ${
                       catValue === "All" && "active"
                     }`}
-                    // data-bs-toggle="pill"
-                    // href="#tab-1"
                     onClick={(e) => {
                       e.preventDefault();
                       setCatValue("All");
@@ -78,8 +62,6 @@ const Shopview = () => {
                       className={`btn d-flex py-2 m-2 bg-light rounded-pill  ${
                         catValue === cat._id && "active"
                       }`}
-                      // data-bs-toggle=
-                      // href={`#tab-${index + 2}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setCatValue(cat._id);
@@ -99,19 +81,25 @@ const Shopview = () => {
                   <div className="row g-4">
                     {products.map((product) => (
                       <div
-                        className="col-md-6 col-lg-4 col-xl-3"
+                        className="col-md-6 col-lg-4 col-xl-4"
                         key={product._id}
                       >
                         <div
-                          className="rounded position-relative vesitable-item"
+                          className="rounded position-relative vesitable-item hover"
                           key={product.title}
                           value={product.title}
-                          style={{ cursor: "pointer" }}
+                          style={{
+                            cursor: "pointer",
+                            height: "350px",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
                         >
                           <div
                             className="vesitable-img"
                             onClick={(e) => {
                               e.preventDefault();
+                              dispatch(setActive("Shop"));
                               dispatch(setProductTitle(product.slug));
                               dispatch(getProductDetailsRequest(product.slug));
                               navigate(`/productDetails/${product.slug}`);
@@ -121,7 +109,8 @@ const Shopview = () => {
                               justifyContent: "center",
                               alignItems: "center",
                               width: "100%",
-                              height: "150px",
+                              height: "200px",
+                              overflow: "hidden",
                             }}
                           >
                             <img
@@ -131,10 +120,13 @@ const Shopview = () => {
                               className="img-fluid w-100 rounded-top"
                               alt=""
                               style={{
+                                width: "auto",
                                 maxWidth: "100%",
-                                maxHeight: "100%",
+                                height: "100%",
                                 objectFit: "contain",
+                                objectPosition: "center",
                               }}
+                              loading="lazy"
                               onClick={() => dispatch(setActive("Shop"))}
                             />
                           </div>
@@ -146,7 +138,7 @@ const Shopview = () => {
                               dispatch(setProductTitle(product.slug));
                               dispatch(getProductDetailsRequest(product.slug));
                               dispatch(setActive("Shop"));
-
+                              dispatch(setCategoryName("All Products"));
                               navigate(`/productDetails/${product.slug}`);
                             }}
                           >
@@ -155,18 +147,16 @@ const Shopview = () => {
                               style={{ color: " #ffffff" }}
                             >
                               {" "}
-                              {product.rating}
+                              {product.rating < 1
+                                ? Math.ceil(product.rating)
+                                : product.rating.toFixed(1)}
                             </i>
                           </div>
                           <div className="p-4 border border-secondary border-top-0 rounded-bottom">
-                            <h4
-                              onClick={(e) => {
-                                e.preventDefault();
-                                dispatch(setActive("Shop"));
-                              }}
-                            >
+                            <h4>
                               <Link
                                 onClick={(e) => {
+                                  dispatch(setActive("Shop"));
                                   e.preventDefault();
                                   dispatch(setProductTitle(product.slug));
                                   dispatch(
@@ -180,48 +170,74 @@ const Shopview = () => {
                               </Link>
                             </h4>
                             <p>{product.tags}</p>
-                            <div className="d-flex justify-content-between flex-lg-wrap">
-                              <p className="text-dark fs-5 fw-bold mb-0">
-                                ₹{product.price}
-                              </p>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  if (id) {
-                                    dispatch(
-                                      getAddToCartRequest(id, product._id)
-                                    );
-                                    dispatch(getCartDetailsRequest(id));
-                                  } else {
-                                    toast.error(
-                                      "you can't add to cart a product before login,please login!"
-                                    );
-                                  }
-                                }}
-                                className="btn border border-secondary rounded-pill px-3 text-primary"
-                              >
-                                <i className="fa fa-shopping-bag me-1 text-primary"></i>
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  if (id) {
-                                    dispatch(
-                                      getAddToWishlistRequest(id, product._id)
-                                    );
+                            {product.product_quantity !== 0 ? (
+                              <div className="d-flex justify-content-between flex-lg-wrap">
+                                <p className="text-dark fs-5 fw-bold mb-0">
+                                  ₹{product.price}
+                                </p>
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (id) {
+                                      dispatch(
+                                        getAddToCartRequest(id, product._id)
+                                      );
+                                      dispatch(getCartDetailsRequest(id));
+                                    } else {
+                                      toast.error(
+                                        "you can't add to cart a product before login,please login!"
+                                      );
+                                    }
+                                  }}
+                                  className="btn border border-secondary rounded-pill px-3 text-primary"
+                                >
+                                  Add{" "}
+                                  <i className="fa fa-shopping-bag me-1 text-primary"></i>
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (id) {
+                                      dispatch(
+                                        getAddToWishlistRequest(id, product._id)
+                                      );
 
-                                    dispatch(getWishlistDataRequest(id));
-                                  } else {
-                                    toast.error(
-                                      "you can't add to wishlist a product without login,please login!"
-                                    );
-                                  }
+                                      dispatch(getWishlistDataRequest(id));
+                                    } else {
+                                      toast.error(
+                                        "you can't add to wishlist a product without login,please login!"
+                                      );
+                                    }
+                                  }}
+                                  className="btn border border-secondary rounded-pill px-3 text-primary"
+                                >
+                                  Add{" "}
+                                  <i className="fa fa-heart me-1 text-primary"></i>
+                                </button>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  fontStyle: "italic",
+                                  fontWeight: "bolder",
+                                  color: "white",
+                                  backgroundColor: "red",
+                                  borderRadius: "50px",
                                 }}
-                                className="btn border border-secondary rounded-pill px-3 text-primary"
                               >
-                                <i className="fa fa-heart me-1 text-primary"></i>
-                              </button>
-                            </div>
+                                <p
+                                  style={{
+                                    marginTop: "5px",
+                                    textAlign: "center",
+                                    marginBottom: "5px",
+                                    fontSize: "13px",
+                                    padding: "5px",
+                                  }}
+                                >
+                                  Currently Out Of Stock!
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -249,5 +265,5 @@ const Shopview = () => {
       </div>
     </div>
   );
-};
+});
 export default Shopview;

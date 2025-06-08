@@ -1,31 +1,27 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useState } from "react";
+import { memo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../../Redux/Products/ProductAction";
 import {
   setCategory,
+  setCategoryName,
   setCurrPage,
   setPage,
 } from "../../Redux/UniversalStore/UnivarSalState";
-// import { unstable_HistoryRouter } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const Categories = () => {
+const Categories = memo(() => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
-  const { allCategories } = useSelector(
-    (state) => state.categoryReducer,
+  const { allCategories, category, page } = useSelector(
+    (state) => ({
+      allCategories: state.categoryReducer.allCategories,
+      category: state.universalReducer.category,
+      page: state.universalReducer.page,
+    }),
     shallowEqual
   );
-  const { category } = useSelector(
-    (state) => state.universalReducer,
-    shallowEqual
-  );
-  const { page } = useSelector((state) => state.universalReducer, shallowEqual);
-  // console.log("PAGE-->", category);
 
   return (
     <div className="row g-4" style={{ marginLeft: "60px" }}>
@@ -47,6 +43,7 @@ const Categories = () => {
                     dispatch(setCategory("All"));
                     dispatch(setPage(1));
                     dispatch(getAllProducts(page, "All", 1, "All"));
+                    dispatch(setCategoryName("All Products"));
                   }}
                 >
                   <span
@@ -72,6 +69,7 @@ const Categories = () => {
                       dispatch(setCurrPage(1));
                       dispatch(getAllProducts(1, el._id, 1, "All"));
                       setCategory(el.name.split(" ").join("-"));
+                      dispatch(setCategoryName(el.name));
                       navigate(
                         `/shop/${el.name.split(" ").join("-").toLowerCase()}`
                       );
@@ -99,5 +97,5 @@ const Categories = () => {
       </div>
     </div>
   );
-};
+});
 export default Categories;

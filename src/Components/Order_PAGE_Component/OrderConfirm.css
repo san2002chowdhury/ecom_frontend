@@ -1,0 +1,175 @@
+/* Order Confirmation Specific Styles */
+.order-confirmation-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.order-confirmation-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.order-confirmation-header h1 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.order-confirmation-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.order-confirmation-success-icon {
+    font-size: 60px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.order-confirmation-details {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.order-confirmation-details h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.order-confirmation-detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.order-confirmation-detail-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.order-confirmation-detail-value {
+    color: #333;
+}
+
+.order-confirmation-product-list {
+    margin-top: 20px;
+}
+
+.order-confirmation-product-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.order-confirmation-product-name {
+    flex: 2;
+}
+
+.order-confirmation-product-quantity, 
+.order-confirmation-product-price {
+    flex: 1;
+    text-align: center;
+}
+
+.order-confirmation-product-total {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+}
+
+.order-confirmation-summary {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.order-confirmation-summary-row {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.order-confirmation-total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.order-confirmation-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.order-confirmation-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin: 0 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.order-confirmation-btn:hover {
+    background: #45a049;
+    color: white;
+}
+
+.order-confirmation-btn-secondary {
+    background: #6c757d;
+}
+
+.order-confirmation-btn-secondary:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.order-confirmation-thank-you {
+    text-align: center;
+    margin-top: 30px;
+    font-style: italic;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .order-confirmation-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .order-confirmation-detail-row {
+        flex-direction: column;
+    }
+    
+    .order-confirmation-product-item {
+        flex-direction: column;
+    }
+    
+    .order-confirmation-product-name, 
+    .order-confirmation-product-quantity, 
+    .order-confirmation-product-price, 
+    .order-confirmation-product-total {
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    
+    .order-confirmation-btn {
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        max-width: 200px;
+    }
+}

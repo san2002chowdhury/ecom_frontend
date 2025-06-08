@@ -6,7 +6,6 @@ import {
 } from "../action";
 
 export const getAllProducts = (page, cat_id, filter, search) => {
-  console.log(`Action called--->getAllProducts-->${page}--->${cat_id}`);
   return {
     type: FETCH_PRODUCTS_REQUEST,
     page: page,
@@ -16,13 +15,9 @@ export const getAllProducts = (page, cat_id, filter, search) => {
   };
 };
 export const getTopTenProducts = () => {
-  // console.log("We are in productAction page");
-
   return { type: FETCH_TOPTEN_PRODUCTS_REQUEST };
 };
 export const getProductDetailsRequest = (slug) => {
-  console.log("PRODUCT DATA--------->", slug);
-
   return { type: FETCH_PRODUCT_DETAILS_REQUEST, slug: slug };
 };
 export const getProductDetailsSuccess = (action) => {

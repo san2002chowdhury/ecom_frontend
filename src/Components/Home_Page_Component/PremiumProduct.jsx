@@ -3,15 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FETCH_TOPTEN_PRODUCTS_REQUEST } from "../../Redux/action";
 import { useEffect } from "react";
-import { BASE_URL } from "../../Redux/api";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const PremiumProduct = () => {
   const dispatch = useDispatch();
   const { top_products } = useSelector((state) => {
-    console.log(
-      "top products------------->",
-      state.productReducer1.top_products
-    );
     return state.productReducer1;
   });
   useEffect(() => {

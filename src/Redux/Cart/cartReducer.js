@@ -6,18 +6,22 @@ import {
   FETCH_ADD_TO_CART_UPDATE_SUCCESS,
   FETCH_CART_DETAILS_REQUEST,
   FETCH_CART_DETAILS_SUCCESS,
+  FETCH_REMOVE_ALL_FROM_CART_REQUEST,
+  FETCH_REMOVE_ALL_FROM_CART_SUCCESS,
   FETCH_REMOVE_FROM_CART_REQUEST,
+  SET_TOTAL_CART_VALUE_SUCCESS,
 } from "../action";
 
 const initialState = {
+  cart_data: [],
+  cart_id: "",
+  total_Cart_Value: 0,
+  discountedCartValue: 0,
   flag: "",
   quantity: "",
   user_id: "",
   product_id: "",
-  cart_id: "",
-  cart_data: [],
   count_cart: 0,
-  total_Cart_Value: 0,
   error: null,
 };
 const cartReducer = (state = initialState, action) => {
@@ -51,12 +55,25 @@ const cartReducer = (state = initialState, action) => {
         ...state,
         cart_data: action.payload.data,
         count_cart: action.payload.cart_count,
+        total_Cart_Value: parseInt(action.payload.total),
       };
     }
     case FETCH_REMOVE_FROM_CART_REQUEST:
       return {
         ...state,
         cart_id: action.cart_id,
+      };
+    case FETCH_REMOVE_ALL_FROM_CART_REQUEST:
+      return {
+        ...state,
+        user_id: action.user_id,
+      };
+    case FETCH_REMOVE_ALL_FROM_CART_SUCCESS:
+      return {
+        ...state,
+        cart_data: [],
+        total_Cart_Value: 0,
+        count_cart: 0,
       };
     case FETCH_ADD_TO_CART_UPDATE_REQUEST:
       return {
@@ -67,7 +84,17 @@ const cartReducer = (state = initialState, action) => {
         product_id: action.product_id,
       };
     case FETCH_ADD_TO_CART_UPDATE_SUCCESS:
-      return { ...state, cart_data: action.payload.data.currentCart };
+      return {
+        ...state,
+        cart_data: action.payload.data.currentCart,
+        total_Cart_Value: parseInt(action.payload.data.total),
+      };
+    case SET_TOTAL_CART_VALUE_SUCCESS:
+      return {
+        ...state,
+        // total_Cart_Value: parseInt(action.payload),
+        discountedCartValue: parseInt(action.payload),
+      };
     default:
       return { ...state };
   }

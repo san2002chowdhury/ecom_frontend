@@ -8,12 +8,10 @@ import {
   FETCH_SET_USER_DATA_SUCCESS,
   FETCH_USER_DETAILS_REQUEST,
   FETCH_USER_DETAILS_SUCCESS,
+  IMAGE_UPLOAD_REQUEST,
 } from "../action";
 
 export const getUserDetailsRequest = (user_id) => {
-  console.log(
-    `Step-1--> getUserDetailsRequest------UserAction-->user_id--->${user_id}`
-  );
   return {
     type: FETCH_USER_DETAILS_REQUEST,
     user_id: user_id,
@@ -21,17 +19,12 @@ export const getUserDetailsRequest = (user_id) => {
 };
 
 export const getUserDetailsSuccess = (action) => {
-  console.log(
-    `getUserDetailsSuccess-----UserAction---->details-->${action.payload}`
-  );
   return {
     type: FETCH_USER_DETAILS_SUCCESS,
     user_details: action.payload,
   };
 };
 export const getUserAddDataRequest = (user_id, data) => {
-  console.log("Step-1--->getUserAddDataRequest--->Action-->", user_id);
-  console.log("Step-1--->getUserAddDataRequest--->Action-->", data);
   return {
     type: FETCH_SET_USER_DATA_REQUEST,
     user_id: user_id,
@@ -87,5 +80,13 @@ export const getForgotPasswordSuccess = (action) => {
 export const getResetPasswordIsReset = () => {
   return {
     type: FETCH_RESET_USER_PASSWORD_IsTrue_REQUEST,
+  };
+};
+
+export const getUploadProfilePhotoRequest = (formData) => {
+  console.log("Step-3-->Profile Photo-->Action-->", formData);
+  return {
+    type: IMAGE_UPLOAD_REQUEST,
+    formData: formData,
   };
 };

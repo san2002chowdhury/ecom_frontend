@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { BASE_URL } from "../../Redux/api";
-// import { toast } from "react-toastify";
+
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-// import { setLoading } from "../../Redux/Loading/LoadingAction";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -14,37 +13,8 @@ const ForgotPassword = () => {
     e.preventDefault();
     setInput({ ...input, [e.target.name]: e.target.value });
   }
-  // function handleCheck() {
-  //   // setLoading(true);
-  //   const handleFetch = async () => {
-  //     const response = {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ email: input.email }),
-  //     };
-  //     await fetch(`${BASE_URL}/user/verify_email`, response)
-  //       .then((data) => {
-  //         return data.json();
-  //       })
-  //       .then((data) => {
-  //         console.log("data----->FORGOT PASSWORD", data);
-  //         // setLoading(false);
-  //         toast.success(data.message);
-
-  //         if (data.otp) {
-  //           navigate("/otp_verification");
-  //           localStorage.setItem("id", data.id);
-  //         } else {
-  //           toast.error(data.message);
-  //         }
-  //       });
-  //   };
-  //   handleFetch();
-  // }
 
   function handleCheck() {
-    // setLoading(true);
-
     const handleFetch = async () => {
       const response = {
         method: "POST",
@@ -52,7 +22,6 @@ const ForgotPassword = () => {
         body: JSON.stringify({ email: input.email }),
       };
 
-      // Wrap the fetch request with toast.promise
       toast.promise(
         fetch(`${BASE_URL}/user/verify_email`, response).then((data) => {
           return data.json();
@@ -60,14 +29,12 @@ const ForgotPassword = () => {
         {
           loading: "Verifying email...",
           success: (data) => {
-            console.log("data----->FORGOT PASSWORD", data);
-            // setLoading(false);
             if (data.otp) {
               navigate("/otp_verification");
               localStorage.setItem("id", data.id);
-              return data.message; // Success message
+              return data.message;
             } else {
-              throw new Error(data.message); // Trigger error toast
+              throw new Error(data.message);
             }
           },
           error: (err) => {

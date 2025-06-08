@@ -6,8 +6,6 @@ const initialState = {
 const loadingReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_LOADING:
-      // console.log("ACTION-->Load->", action);
-
       return {
         ...state,
         isLoading: action.payload,

@@ -1,24 +1,33 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 // import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import {
+  setCategory,
+  setCategoryName,
   setFilter,
+  setPage,
   setSearch,
 } from "../../Redux/UniversalStore/UnivarSalState";
-
-const ShopPageHeader = () => {
-  const { filter } = useSelector(
-    (state) => state.universalReducer,
+import { CircleX } from "lucide-react";
+import { getAllProducts } from "../../Redux/Products/ProductAction";
+import "./external.css";
+const ShopPageHeader = memo(() => {
+  const [searchValue, setSearchValue] = useState("");
+  const { filter, categoryName, page } = useSelector(
+    (state) => ({
+      filter: state.universalReducer.filter,
+      categoryName: state.universalReducer.categoryName,
+      page: state.universalReducer.page,
+    }),
     shallowEqual
   );
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     if (searchValue === "") {
       dispatch(setSearch("All"));
     }
-  }, [dispatch, searchValue]);
+  }, [searchValue, dispatch]);
 
   function handleOption(e) {
     e.preventDefault();
@@ -26,9 +35,8 @@ const ShopPageHeader = () => {
   }
   function handleSearch(e) {
     e.preventDefault();
-    // alert("Hi");
     setSearchValue(e.target.value);
-    // setSearch(e.target.value);
+    dispatch(setSearch(searchValue));
   }
   function handleClick(e) {
     e.preventDefault();
@@ -49,7 +57,6 @@ const ShopPageHeader = () => {
               aria-describedby="search-icon-1"
               value={searchValue}
               onChange={handleSearch}
-              // onKeyDown={handleKeyDown}
             />
             <span
               style={{ cursor: "pointer" }}
@@ -60,7 +67,54 @@ const ShopPageHeader = () => {
               <i className="fa fa-search"></i>
             </span>
           </div>
+          <span
+            className="badge rounded-pill  text-dark"
+            style={{
+              fontWeight: "bolder",
+              marginTop: "20px",
+              height: "30px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "13px",
+              padding: "3px 10px",
+              boxSizing: "border-box",
+              position: "relative",
+              maxWidth: "100%",
+              backgroundColor: "yellowgreen",
+              border: "3px solid orange",
+            }}
+          >
+            <span
+              style={{
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                maxWidth: "150px",
+                fontWeight: "bolder",
+                color: "white",
+              }}
+            >
+              {categoryName}
+            </span>
+            {categoryName !== "All Products" ? (
+              <CircleX
+                className="cossButton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (categoryName !== "All Products") {
+                    dispatch(setCategory("All"));
+                    dispatch(setPage(1));
+                    dispatch(getAllProducts(page, "All", 1, "All"));
+                    dispatch(setCategoryName("All Products"));
+                  }
+                }}
+              />
+            ) : (
+              ""
+            )}
+          </span>
         </div>
+
         <div className="col-6"></div>
         <div className="col-xl-3">
           <div className="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
@@ -81,5 +135,5 @@ const ShopPageHeader = () => {
       </div>
     </div>
   );
-};
+});
 export default ShopPageHeader;

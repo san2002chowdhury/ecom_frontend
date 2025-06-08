@@ -1,7 +1,4 @@
 const Spinner = () => {
-  console.log(
-    "============================spining============================================"
-  );
   return (
     <div
       id="spinner"
