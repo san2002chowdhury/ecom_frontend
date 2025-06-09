@@ -18,7 +18,6 @@ const OrderDetails = ({ totalAmount, totalTax, deliveryCharge }) => {
       }),
       shallowEqual
     );
-  console.log("Checkout orderDetails>>>>>>>", cart_data);
   const style = {
     padding: "2px",
     backgroundColor: "#0011",
@@ -74,7 +73,7 @@ const OrderDetails = ({ totalAmount, totalTax, deliveryCharge }) => {
                 {cart.product_name}
               </td>
               <td style={{ fontSize: "15px" }}>₹{cart.product_price}</td>
-              <td style={{ fontSize: "15px" }}>₹{cart.quantity}</td>
+              <td style={{ fontSize: "15px" }}>{cart.quantity}</td>
               <td style={{ fontSize: "15px" }}>₹{cart.total_price}</td>
             </tr>
           ))}

@@ -1,6 +1,5 @@
 import axios from "axios";
-// import dotenv from "dotenv";
-// dotenv.config({ path: "./config.env" });
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 console.log("BASE URL-->", BASE_URL);
 
