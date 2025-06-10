@@ -13,10 +13,19 @@ import {
   FETCH_TOP_CATEGORY_REQUEST,
   FETCH_TOPTEN_PRODUCTS_REQUEST,
 } from "../Redux/action";
+import Modal from "react-bootstrap/Modal";
 const Home = memo(() => {
   const dispatch = useDispatch();
   const [catValue, setCatValue] = useState("All");
+  const [show, setShow] = useState(false);
 
+  useEffect(() => {
+    const seen = localStorage.getItem("seenWelcomeHomeModal");
+    if (!seen) {
+      setShow(true);
+      localStorage.setItem("seenWelcomeHomeModal", "true");
+    }
+  }, []);
   useEffect(() => {
     dispatch({ type: FETCH_TOP_CATEGORY_REQUEST });
     dispatch({ type: FETCH_TOPTEN_PRODUCTS_REQUEST });
@@ -31,6 +40,33 @@ const Home = memo(() => {
   }, [dispatch, catValue]);
   return (
     <div>
+      {show && (
+        <>
+          <Modal
+            show={show}
+            onHide={() => setShow(false)}
+            dialogClassName="modal-120w"
+            aria-labelledby="example-custom-modal-styling-title"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title id="example-custom-modal-styling-title">
+                Some Important Message
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                My project is hosted through free hosting
+                <strong>(Render.com).</strong>For that it has become relatively
+                slow, it can usually be{" "}
+                <strong style={{ color: "red" }}>
+                  {" "}
+                  50 seconds or more and slow,also it casue slow API response.
+                </strong>
+              </p>
+            </Modal.Body>
+          </Modal>
+        </>
+      )}
       <Hero />
       <Feature />
       <Shopview catValue={catValue} setCatValue={setCatValue} />
