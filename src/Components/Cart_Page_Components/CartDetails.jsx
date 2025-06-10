@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { BASE_URL } from "../../Redux/api";
 
 import {
   getCartDetailsRequest,
@@ -20,11 +21,13 @@ import {
 import { setLoading } from "../../Redux/Loading/LoadingAction";
 import { BadgeAlert, BadgeCheck } from "lucide-react";
 import { setCouponUseStatusDefault } from "../../Redux/Order/orderAction";
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 const CartDetails = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [coupon, setCoupon] = useState("");
+  const [show, setShow] = useState(false);
   const {
     id,
     cart_data,
@@ -101,7 +104,13 @@ const CartDetails = memo(() => {
     }
   }, [total_Cart_Value, code, applied, minCartValue, cart_data]);
 
-  console.log("Total Cart Value", total_Cart_Value);
+  useEffect(() => {
+    const seen = localStorage.getItem("seenWelcomeModal");
+    if (!seen && cart_data.length !== 0) {
+      setShow(true);
+      localStorage.setItem("seenWelcomeModal", "true");
+    }
+  }, []);
 
   const style = {
     padding: "2px",
@@ -121,13 +130,61 @@ const CartDetails = memo(() => {
     fontWeight: "bold",
     fontStyle: "italic",
   };
-
-  const [isButtonDisabledDec, setIsButtonDisabledDec] = useState(false);
-  const [isButtonDisabledInc, setIsButtonDisabledInc] = useState(false);
-
   return (
     <div className="container-fluid py-5">
       <div className="container py-5">
+        {cart_data.length !== 0 ? (
+          <>
+            <Modal
+              show={show}
+              onHide={() => setShow(false)}
+              dialogClassName="modal-120w"
+              aria-labelledby="example-custom-modal-styling-title"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="example-custom-modal-styling-title">
+                  Some Important Message
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>
+                  🎁 Use coupon code <strong>WELCOME10</strong> for 10% off on
+                  your first order.
+                  <br />
+                  *Minimum order value must be above ₹50.
+                </p>
+                <p>
+                  💳 <strong>Test Online Payment With This Credentials:</strong>
+                  <br />
+                  👉🏻 <strong>UPI ID:</strong> To test successful payment use,
+                  <strong>success@razorpay</strong>.
+                  <br />
+                  👉🏻 <strong>Test Card for Visa Razorpay:</strong>
+                  <br />
+                  <strong>
+                    {" "}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Card Number:
+                  </strong>{" "}
+                  4111 1111 1111 1111.
+                  <br />
+                  <strong>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expiry Date:
+                  </strong>{" "}
+                  Any future date.
+                  <br />
+                  <strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CVV:</strong> Any
+                  random 3 digits.
+                </p>
+                <p>
+                  📧 <strong>Order Confirmation:</strong> You'll receive an
+                  email with a PDF attachment after placing your order.
+                </p>
+              </Modal.Body>
+            </Modal>
+          </>
+        ) : (
+          <></>
+        )}
         <div className="text-end mb-3">
           <button className="btn btn-primary" onClick={handleClick}>
             Clear All
@@ -189,19 +246,9 @@ const CartDetails = memo(() => {
                         <div className="input-group-btn">
                           <button
                             className="btn btn-sm btn-minus rounded-circle bg-light border"
-                            disabled={isButtonDisabledDec}
                             onClick={(e) => {
                               e.preventDefault();
-
-                              if (isButtonDisabledDec) return;
-
-                              setIsButtonDisabledDec(true);
-
                               if (cart.quantity > 1) {
-                                console.log(
-                                  "cart.quantity>>>>>>>>>>>",
-                                  cart.quantity
-                                );
                                 dispatch(
                                   getUpdateCartDataRequest(
                                     "dec",
@@ -214,10 +261,6 @@ const CartDetails = memo(() => {
                               if (cart.quantity === 1) {
                                 toast.error("You cant set the quantity at 0");
                               }
-
-                              setTimeout(() => {
-                                setIsButtonDisabledDec(false);
-                              }, 500);
                             }}
                           >
                             <i className="fa fa-minus"></i>
@@ -231,7 +274,6 @@ const CartDetails = memo(() => {
                         <div className="input-group-btn">
                           <button
                             className="btn btn-sm btn-plus rounded-circle bg-light border"
-                            disabled={isButtonDisabledInc}
                             onClick={(e) => {
                               e.preventDefault();
                               if (cart.quantity < 5) {
@@ -249,9 +291,6 @@ const CartDetails = memo(() => {
                                   "You cant buy a product more than 5"
                                 );
                               }
-                              setTimeout(() => {
-                                setIsButtonDisabledInc(false);
-                              }, 500);
                             }}
                           >
                             <i className="fa fa-plus"></i>
