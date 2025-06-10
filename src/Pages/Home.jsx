@@ -55,7 +55,7 @@ const Home = memo(() => {
             </Modal.Header>
             <Modal.Body>
               <p>
-                My project is hosted through free hosting
+                My project is hosted through a free hosting
                 <strong>(Render.com).</strong>For that it has become relatively
                 slow, it can usually be{" "}
                 <strong style={{ color: "red" }}>
