@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../../Redux/api";
-
 import {
   getCartDetailsRequest,
   getRemoveAllFromCart,
@@ -22,7 +20,7 @@ import { setLoading } from "../../Redux/Loading/LoadingAction";
 import { BadgeAlert, BadgeCheck } from "lucide-react";
 import { setCouponUseStatusDefault } from "../../Redux/Order/orderAction";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const CartDetails = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
