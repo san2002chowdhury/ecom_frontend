@@ -4,7 +4,7 @@
 
 ## 🔗 Live Demo
 
-> ⚠️ Hosted on a free tier — **initial page loads may take \~1 min** due to server cold starts.live link:- https://ecom-frontend-tswm.onrender.com
+> ⚠️ Hosted on a free tier — **initial page loads may take \~1 min** due to server cold starts.live link:- (https://ecom-frontend-tswm.onrender.com)
 > 📹 **Project video demo** coming soon.
 
 ---
