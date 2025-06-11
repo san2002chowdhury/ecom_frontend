@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+# 🛒 Chowdhury Store
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Chowdhury Store** is a full-featured **MERN stack eCommerce application** built from scratch to simulate a real-world online store. It supports secure authentication, OTP flows, Razorpay payment integration, product reviews, PDF invoice generation, and dynamic coupon application — making it an ideal full-stack portfolio project.
 
-## Available Scripts
+## 🔗 Live Demo
 
-In the project directory, you can run:
+> ⚠️ Hosted on a free tier — **initial page loads may take \~1 min** due to server cold starts.
+> 📹 **Project video demo** coming soon.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📁 GitHub Repositories
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* 🔷 **Frontend**: [ecom\_frontend](https://github.com/san2002chowdhury/ecom_frontend)
+* 🔶 **Backend**: [ecom\_backend](https://github.com/san2002chowdhury/ecom_backend)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧱 Tech Stack
 
-### `npm run build`
+### 🔹 Frontend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* React JS (Functional Components)
+* Redux Toolkit, Redux Store & Redux Saga
+* React Router DOM
+* Bootstrap 5 + Custom CSS
+* Axios for API calls
+* Form validation and toast notifications
+* Responsive design with category-based navigation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🔸 Backend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Node.js + Express
+* MongoDB + Mongoose
+* JWT Authentication
+* OTP System (email-based)
+* OAuth2-based NodeMailer Email System
+* Razorpay Payment Gateway
+* PDFKit + html-pdf-node for invoice PDFs
+* RESTful APIs with role-based protection
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ✨ Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🛍️ Product Management
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* Dynamic product listing with pagination
+* Banner-based category redirection
+* Product **ratings & reviews**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  * Star-based rating system
+  * User-authenticated reviews
+  * Review fetch and display per product
 
-## Learn More
+### 🛒 Cart & Checkout
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+* Add/remove/update product quantity (1–5)
+* Apply coupon codes:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  * `WELCOME10` — 10% off for new users
+  * `OFF200` — ₹200 off for all
+* Total price reflects real-time discounts
+* Fixed shipping rate (₹40)
+* Payment:
 
-### Code Splitting
+  * Razorpay for online
+  * Cash on Delivery
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 🧾 Order Summary
 
-### Analyzing the Bundle Size
+* Order confirmation page after checkout
+* View past orders
+* Filter/search by order ID or status
+* PDF invoice sent via email
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  * Contains product names, images, quantities, coupon applied, and total
 
-### Making a Progressive Web App
+### 📬 Email Notifications (via OAuth2 Gmail)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* Welcome email on signup
+* Newsletter subscription confirmation
+* Contact message response
+* OTP for password recovery
+* PDF invoice email after order placement
 
-### Advanced Configuration
+### 👤 User Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* Register/login with JWT & session handling
+* Forgot/Reset password with OTP flow
+* Profile page with editable details & profile photo upload
+* Wishlist management
+* Cart persistence (via backend and localStorage)
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🧪 Security
 
-### `npm run build` fails to minify
+* JWT-authenticated routes
+* OTP expiration & verification limits
+* Razorpay signature validation
+* Middleware-protected API endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 📷 Screenshots
+
+> (*Coming soon along with video demo*)
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Clone Repositories
+
+```bash
+# Frontend
+git clone https://github.com/san2002chowdhury/ecom_frontend.git
+
+# Backend
+git clone https://github.com/san2002chowdhury/ecom_backend.git
+```
+
+### 2. Setup Frontend
+
+```bash
+cd ecom_frontend
+npm install
+npm start
+```
+
+### 3. Setup Backend
+
+```bash
+cd ecom_backend
+npm install
+npm run dev
+```
+
+### 4. Environment Variables (`.env`)
+
+Configure these in the backend:
+
+```env
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_jwt_secret
+EMAIL_CLIENT_ID=your_oauth_client_id
+EMAIL_CLIENT_SECRET=your_oauth_client_secret
+EMAIL_REFRESH_TOKEN=your_refresh_token
+EMAIL_USER=your_email_address
+RAZORPAY_KEY_ID=your_razorpay_key
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+```
+
+---
+
+## 🔮 Future Improvements
+
+* Admin dashboard for managing inventory, users, and orders
+* Product image gallery
+* Product stock notifications
+* Review moderation (report/spam flag)
+* UI/UX polish and animation
+
+---
+
+## 👨‍💻 Author
+
+**Santanu Chowdhury**
+📧 [santanuchow2@gmail.com] (https://github.com/san2002chowdhury)
+
+
