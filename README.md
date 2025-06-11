@@ -167,6 +167,6 @@ RAZORPAY_KEY_SECRET=your_razorpay_secret
 ## 👨‍💻 Author
 
 **Santanu Chowdhury**
-📧 [Santanu Chowdhury] (https://github.com/san2002chowdhury)
+📧 [santanuchow2@gmail.com] (https://github.com/san2002chowdhury)
 
 
