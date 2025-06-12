@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = process.env.REACT_APP_BASE_URL;

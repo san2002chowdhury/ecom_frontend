@@ -30,7 +30,7 @@ const OrderDetails = () => {
       dispatch({
         type: GET_ORDER_DETAILS_REQUEST,
         user_id: id || user_id,
-        // page: orderPage || 1,
+
         page: orderPage || pageLocal,
         searchValue: "All",
         filterOrder: "All Orders",

@@ -4,8 +4,6 @@ import { getResetPasswordRequest } from "../../Redux/User/userAction";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { BadgeCheck } from "lucide-react";
 import { BadgeAlert } from "lucide-react";
-
-// import { getLoginEmpty } from "../../Redux/Login/LoginAction";
 const ResetPassword = () => {
   const dispatch = useDispatch();
   const [input, setInput] = useState({

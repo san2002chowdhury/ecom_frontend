@@ -21,8 +21,6 @@ const OrderSuccessful = () => {
       shallowEqual
     );
 
-  console.log(" order successfull>>>>>>>", cart_data);
-
   const deliveryCharge = 40;
   function handleContinueShopping(e) {
     e.preventDefault();
@@ -34,7 +32,6 @@ const OrderSuccessful = () => {
   }
   const tax = cart_data.totalPrice * 0.05;
   const total = cart_data.product;
-  console.log(tax, "<---Tax && Total Price--->", total);
 
   return (
     <div

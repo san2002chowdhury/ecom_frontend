@@ -49,8 +49,8 @@ const TopSelling = memo(() => {
                     justifyContent: "center",
                     alignItems: "center",
                     width: "100%",
-                    height: "250px", // Fixed height for image container
-                    overflow: "hidden", // Ensure images don't overflow
+                    height: "250px",
+                    overflow: "hidden",
                     cursor: "pointer",
                   }}
                 >
@@ -58,7 +58,6 @@ const TopSelling = memo(() => {
                     <img
                       src={`${BASE_URL}/images/` + product.product_image}
                       className="vesitable-img img-fluid rounded-circle "
-                      // style={{ width: "140px", height: "140px" }}
                       style={{
                         width: "auto",
                         maxWidth: "100%",

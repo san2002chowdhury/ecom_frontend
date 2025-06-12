@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./VerifyOTP.css";
 import toast from "react-hot-toast";
 
 import { useNavigate } from "react-router-dom";
-import { setLoading } from "../../Redux/Loading/LoadingAction";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const OtpComponent = () => {
@@ -12,33 +11,25 @@ const OtpComponent = () => {
   const [inputs, setInputs] = useState(Array(6).fill(""));
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const inputRefs = useRef([]);
-
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
-
   const handleInputChange = (e, index) => {
     e.preventDefault();
     const value = e.target.value;
-
     if (value.length > 1) return;
-
     const newInputs = [...inputs];
     newInputs[index] = value;
-
     if (value !== "" && index < inputs.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
-
     setInputs(newInputs);
     checkButtonStatus(newInputs);
   };
-
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedValue = e.clipboardData.getData("text");
     const newInputs = [...inputs];
-
     for (let i = 0; i < newInputs.length; i++) {
       if (i < pastedValue.length) {
         newInputs[i] = pastedValue[i];
@@ -46,22 +37,18 @@ const OtpComponent = () => {
         newInputs[i] = "";
       }
     }
-
     setInputs(newInputs);
     checkButtonStatus(newInputs);
   };
-
   const handleBackspace = (e, index) => {
     if (e.key === "Backspace" && index > 0 && inputs[index] === "") {
       inputRefs.current[index - 1]?.focus();
     }
   };
-
   const checkButtonStatus = (inputs) => {
     const isValid = !inputs.includes("");
-    setIsButtonDisabled(!isValid); // Enable button if all fields are filled
+    setIsButtonDisabled(!isValid);
   };
-
   const handleVerify = (e) => {
     e.preventDefault();
 
@@ -150,7 +137,7 @@ const OtpComponent = () => {
                 {inputs.map((input, index) => (
                   <input
                     key={index}
-                    ref={(el) => (inputRefs.current[index] = el)} // Assign ref to each input
+                    ref={(el) => (inputRefs.current[index] = el)}
                     type="number"
                     value={input}
                     onChange={(e) => handleInputChange(e, index)}

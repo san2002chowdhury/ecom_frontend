@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import {
   setCategory,
