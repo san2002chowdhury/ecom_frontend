@@ -5,7 +5,7 @@
 ## 🔗 Live Demo
 
 > ⚠️ Hosted on a free tier — **initial page loads may take \~1 min** due to server cold starts.live link:- [View Live Demo](https://ecom-frontend-tswm.onrender.com)
-> 📹 **Project video demo** coming soon.
+> 📹 **Project video demo** 👉 [Watch Video Demo on Google Drive](https://drive.google.com/file/d/1u2CDecj5wm4cJVKdv5tbOwuDizhsKUuR/view?usp=drive_link)
 
 ---
 
