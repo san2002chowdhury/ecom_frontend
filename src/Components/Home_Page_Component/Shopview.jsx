@@ -185,7 +185,7 @@ const Shopview = memo(({ catValue, setCatValue }) => {
                                       dispatch(getCartDetailsRequest(id));
                                     } else {
                                       toast.error(
-                                        "you can't add to cart a product before login,please login!"
+                                        "You can't add to cart a product before login,please login!"
                                       );
                                     }
                                   }}
@@ -205,7 +205,7 @@ const Shopview = memo(({ catValue, setCatValue }) => {
                                       dispatch(getWishlistDataRequest(id));
                                     } else {
                                       toast.error(
-                                        "you can't add to wishlist a product without login,please login!"
+                                        "You can't add to wishlist a product without login,please login!"
                                       );
                                     }
                                   }}

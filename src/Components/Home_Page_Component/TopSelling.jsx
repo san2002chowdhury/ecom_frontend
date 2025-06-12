@@ -110,7 +110,7 @@ const TopSelling = memo(() => {
                             dispatch(getAddToCartRequest(id, product._id));
                           } else {
                             toast.error(
-                              "you can't add to cart a product before login,please login!"
+                              "You can't add to cart a product before login,please login!"
                             );
                           }
                         }}
