@@ -1,6 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import isValidEmail from "../../utils/validateEmail";
+import { BadgeAlert, BadgeCheck } from "lucide-react";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ForgotPassword = () => {
