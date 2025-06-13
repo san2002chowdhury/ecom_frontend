@@ -5,12 +5,16 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const [errorEmail, setErrorEmail] = useState(false);
   const [input, setInput] = useState({
     email: "",
   });
   function handleChange(e) {
     e.preventDefault();
-    setInput({ ...input, [e.target.name]: e.target.value });
+    if (e.target.name === "email") {
+      setErrorEmail(isValidEmail(e.target.value));
+      setInput({ ...input, [e.target.name]: e.target.value });
+    }
   }
 
   function handleCheck() {
@@ -45,6 +49,26 @@ const ForgotPassword = () => {
 
     handleFetch();
   }
+  const style = {
+    color: "red",
+    fontWeight: "bold",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleSuccess = {
+    color: "green",
+    fontWeight: "bolder",
+    fontStyle: "italic",
+    marginTop: "1px",
+    marginBottom: "0px",
+  };
+  const styleBackground = {
+    marginTop: "10px",
+    padding: "3px",
+    maxWidth: "100%",
+    borderRadius: "50px",
+  };
 
   return (
     <div
@@ -57,16 +81,29 @@ const ForgotPassword = () => {
       }}
     >
       <h1 style={{ textAlign: "center" }}>Forgot Password</h1>
-      <hr style={{ height: "5px", marginBottom: "10px" }} />
+      <hr style={{ height: "2px", marginBottom: "10px" }} />
 
       <input
         type="text"
-        placeholder="enter your email"
+        placeholder=" Enter your email"
         name="email"
         style={{ width: "100%" }}
         value={input.email}
         onChange={handleChange}
       />
+      {!errorEmail ? (
+        <div style={styleBackground} className="bg-light">
+          <p style={style}>
+            <BadgeAlert /> Please enter a valid email
+          </p>
+        </div>
+      ) : (
+        <div style={styleBackground} className="bg-light">
+          <p style={styleSuccess}>
+            <BadgeCheck /> Everything is fine!
+          </p>
+        </div>
+      )}
       <button
         className="btn btn-primary"
         style={{ marginTop: "15px", width: "100%" }}
